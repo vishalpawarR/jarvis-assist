@@ -22,12 +22,33 @@ src/
     saved-pages/
   popup/                    Extension popup shell and styles
   shared/                   Shared storage keys and small utilities
+web/                        Independent Next.js web app and package
 ```
 
 Each user-facing feature owns its popup behavior in `src/features/<feature>/`.
 The popup shell composes these modules. The service worker and injected content
 script remain separate browser entry points. Add a new feature folder, not a
-new `package.json`; the root package owns shared developer tooling.
+new extension-feature `package.json`; the root package owns shared developer
+tooling, while `web/` has its own package for Next.js dependencies and scripts.
+
+The website's planner and architecture decisions stay in the shared root
+[`docs/PLANNER.md`](docs/PLANNER.md) and
+[`docs/decisions/README.md`](docs/decisions/README.md); see
+[`web/README.md`](web/README.md) for running the website. Supabase is planned
+but is not configured in the app yet.
+
+## Web app (Next.js)
+
+From the repository root, run:
+
+```powershell
+cd web
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000). See the web app README for
+its scripts and the current integration status.
 
 ## Install for development
 

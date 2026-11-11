@@ -1,2 +1,5 @@
 node_modules
 package-lock.json
+web/.next
+web/next-env.d.ts
+web/package-lock.json
