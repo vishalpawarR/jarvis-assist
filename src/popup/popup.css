@@ -293,6 +293,18 @@ form input {
   background: #fff;
   font: inherit;
 }
+.custom-personal-field {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid #eceef5;
+}
+.custom-personal-field .button {
+  min-height: 32px;
+  padding: 6px 8px;
+}
 .copy-value {
   display: flex;
   width: 100%;

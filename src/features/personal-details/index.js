@@ -1,8 +1,20 @@
 import { PERSONAL_INFO_KEY } from "../../shared/storage.js";
+import {
+  collectCustomFields,
+  initializeCustomFields,
+  renderCustomFields,
+} from "./custom-fields.js";
 
 const personalMessage = document.getElementById("personal-message");
 const form = document.getElementById("personal-form");
 const values = document.getElementById("personal-values");
+const standardLabels = {
+  fullName: "Full name",
+  email: "Email",
+  phone: "Mobile number",
+  location: "Location",
+  linkedin: "LinkedIn",
+};
 
 export async function renderPersonalInfo() {
   const result = await chrome.storage.local.get(PERSONAL_INFO_KEY);
@@ -13,28 +25,30 @@ export async function renderPersonalInfo() {
     }
   }
 
+  const customInfo = renderCustomFields(personalInfo);
+
   values.replaceChildren();
-  const labels = {
-    fullName: "Full name",
-    email: "Email",
-    phone: "Mobile number",
-    location: "Location",
-    linkedin: "LinkedIn",
-  };
-  for (const [key, label] of Object.entries(labels)) {
-    if (!personalInfo[key]) continue;
+  const entries = [
+    ...Object.entries(standardLabels).map(([key, label]) => ({
+      label,
+      value: personalInfo[key],
+    })),
+    ...customInfo.map(({ label, value }) => ({ label, value })),
+  ];
+  for (const { label, value } of entries) {
+    if (!value) continue;
     const button = document.createElement("button");
     button.type = "button";
     button.className = "copy-value";
     button.setAttribute("aria-label", `Copy ${label}`);
-    const value = document.createElement("strong");
-    value.textContent = personalInfo[key];
+    const valueElement = document.createElement("strong");
+    valueElement.textContent = value;
     const hint = document.createElement("span");
     hint.textContent = `${label} · click to copy`;
-    button.append(value, hint);
+    button.append(valueElement, hint);
     button.addEventListener("click", async () => {
       try {
-        await navigator.clipboard.writeText(personalInfo[key]);
+        await navigator.clipboard.writeText(value);
         personalMessage.textContent = `${label} copied to clipboard.`;
       } catch (error) {
         console.error(`Jarvis could not copy ${label}.`, error);
@@ -52,6 +66,7 @@ export function initializePersonalDetails() {
     for (const [key, value] of Object.entries(info)) {
       info[key] = value.trim();
     }
+    info.customFields = collectCustomFields();
     try {
       await chrome.storage.local.set({ [PERSONAL_INFO_KEY]: info });
       personalMessage.textContent = "Personal details saved on this device.";
@@ -61,6 +76,8 @@ export function initializePersonalDetails() {
       personalMessage.textContent = "Could not save your details.";
     }
   });
+
+  initializeCustomFields();
 
   document.getElementById("clear-personal").addEventListener("click", async () => {
     try {

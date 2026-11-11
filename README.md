@@ -70,7 +70,8 @@ and Markdown on save.
 - See a day-count badge on each job-site icon; the icon gets a red outline
   after seven days without a visit. Jarvis sends one generic browser reminder
   when a site first becomes stale; visiting it starts a new reminder cycle.
-- Save contact details locally and click a saved value to copy it.
+- Save contact details and custom personal fields locally; click a saved value
+  to copy it.
 - Pick a PDF resume and reopen it in an extension viewer.
 - Save a resume copy under Downloads/Jarvis Resume and open that folder.
 - Export tracked-site, saved-page, and personal details as JSON.

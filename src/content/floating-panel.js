@@ -130,23 +130,41 @@
       location: "Location",
       linkedin: "LinkedIn",
     };
-    const entries = Object.entries(labels).filter(([key]) => personalInfo[key]);
+    const entries = [
+      ...Object.entries(labels)
+        .filter(([key]) => personalInfo[key])
+        .map(([key, label]) => [label, personalInfo[key]]),
+      ...(Array.isArray(personalInfo.customFields)
+        ? personalInfo.customFields
+            .filter((field) => field?.label && field?.value)
+            .map((field) => [field.label, field.value])
+        : []),
+      ...Object.entries(personalInfo)
+        .filter(
+          ([key, value]) =>
+            !Object.hasOwn(labels, key) &&
+            key !== "customFields" &&
+            typeof value === "string" &&
+            value,
+        )
+        .map(([label, value]) => [label, value]),
+    ];
     addText(panel, "h3", "My details");
     if (!entries.length) {
       addText(panel, "p", "Add your details in the Jarvis extension popup.", "empty");
     } else {
       const details = document.createElement("div");
       details.className = "details";
-      for (const [key, label] of entries) {
+      for (const [label, value] of entries) {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "detail";
-        button.setAttribute("aria-label", `Copy ${label}: ${personalInfo[key]}`);
-        addText(button, "span", personalInfo[key], "detail-value");
+        button.setAttribute("aria-label", `Copy ${label}: ${value}`);
+        addText(button, "span", value, "detail-value");
         const caption = addText(button, "span", label, "detail-label");
         button.addEventListener("click", async () => {
           try {
-            await navigator.clipboard.writeText(personalInfo[key]);
+            await navigator.clipboard.writeText(value);
             caption.textContent = "Copied";
             setTimeout(() => {
               caption.textContent = label;
