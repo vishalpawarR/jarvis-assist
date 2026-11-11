@@ -153,5 +153,5 @@ requested.
   cleanup; selected data categories are not transferred yet.
 - 2026-11-11 — Added consent-gated preview, two-way merge, deletion handling,
   conflict resolution, and extension refresh on local edits, popup open,
-  startup, and a 15-minute retry alarm. Mocked sync tests pass; live Supabase
-  verification remains pending.
+  startup, and a 15-minute retry alarm (`318433a`). Mocked sync tests pass;
+  live Supabase verification remains pending.
