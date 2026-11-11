@@ -23,12 +23,12 @@ payloads should avoid personal details and resume contents.
 
 ### 1. Installable PWA and safe offline fallback
 
-- [ ] Add app manifest, install icons, theme color, and mobile metadata.
-- [ ] Register a small service worker in production.
-- [ ] Cache only the static offline page and app icons; never cache private
+- [x] Add app manifest, install icons, theme color, and mobile metadata.
+- [x] Register a small service worker in production.
+- [x] Cache only the static offline page and app icons; never cache private
       pages or API responses.
-- [ ] Verify manifest/icons and offline navigation with a production build on
-      localhost and HTTPS deployment.
+- [x] Verify manifest and offline navigation in a production build on localhost.
+- [ ] Verify browser installation on an HTTPS deployment and target mobile devices.
 
 ### 2. Install guidance and permission onboarding
 
@@ -59,4 +59,11 @@ payloads should avoid personal details and resume contents.
 - Notification prompts are opt-in and user initiated, never coupled to app
   installation.
 - Native widgets are outside the web-only scope.
+- Feature 1 implementation: manifest and icons are in place; the service worker
+  only caches the static offline document and icons, and falls back to the
+  offline document for failed same-origin navigations. Authentication and
+  dashboard data are never cached. A production browser check confirmed the
+  manifest and service worker load, and an offline dashboard navigation shows
+  the offline page. Installation on deployed HTTPS and target devices remains
+  to be verified.
 - Current live push delivery and widget support: **not implemented**.

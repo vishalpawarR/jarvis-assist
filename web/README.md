@@ -12,6 +12,13 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+The app includes an installable PWA manifest and app icons. Install prompts are
+browser-controlled and require HTTPS when deployed (localhost works for local
+testing). Its service worker is registered only in production and caches only
+the public offline page and icons; dashboard pages and account data are not
+available offline. See the [PWA roadmap](../docs/features/PWA.md) for push
+notification and native widget limitations.
+
 ## Available checks
 
 - `npm run lint` — run ESLint.

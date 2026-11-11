@@ -29,6 +29,52 @@ for PowerShell, from the repository root unless stated otherwise.
 The logo fix is `9dbc965`; the command guide is `feb9773`. The feature branch
 was fast-forwarded to `master`.
 
+## Commands used for the PWA feature
+
+| Command                                                                                                                                                                                                                      | What it does                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `git switch -c feature/web-pwa-notifications-widgets`                                                                                                                                                                        | Creates the feature branch from `master`.                                           |
+| `npx prettier --write README.md web/README.md docs/features/PWA.md web/src/app/layout.tsx web/src/app/manifest.ts web/src/features/pwa/service-worker-registration.tsx web/public/service-worker.js web/public/offline.html` | Formats the PWA source and documentation.                                           |
+| `Push-Location web; npm run lint; $result = $LASTEXITCODE; Pop-Location; exit $result`                                                                                                                                       | Lints the web application.                                                          |
+| `Push-Location web; npm run typecheck; $result = $LASTEXITCODE; Pop-Location; exit $result`                                                                                                                                  | Type-checks the web application.                                                    |
+| `Push-Location web; npm run build; $result = $LASTEXITCODE; Pop-Location; exit $result`                                                                                                                                      | Builds the production app, including its generated web manifest route.              |
+| `node --check web\public\service-worker.js`                                                                                                                                                                                  | Checks service-worker JavaScript syntax.                                            |
+| `Push-Location web; npm run start -- --hostname 127.0.0.1`                                                                                                                                                                   | Serves the production build locally for a browser check; press `Ctrl+C` to stop it. |
+
+The app was opened at `http://127.0.0.1:3000` in a browser. The manifest,
+worker registration, PNG icon responses, and offline navigation were checked;
+turning the browser context offline and navigating to `/dashboard` displayed
+the public offline page. This localhost test does not replace checking the
+install prompt on an HTTPS deployment and a real mobile device.
+
+The source logo was resized to web app icon dimensions with Windows
+`System.Drawing`:
+
+```powershell
+Add-Type -AssemblyName System.Drawing
+$source = [System.Drawing.Image]::FromFile((Resolve-Path 'assets\jarvis-128.png'))
+foreach ($size in @(192, 512, 180)) {
+  $bitmap = [System.Drawing.Bitmap]::new(
+    $size,
+    $size,
+    [System.Drawing.Imaging.PixelFormat]::Format32bppArgb
+  )
+  $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+  $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+  $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
+  $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+  $graphics.DrawImage($source, 0, 0, $size, $size)
+  $name = if ($size -eq 180) { 'apple-touch-icon.png' } else { "icon-$size.png" }
+  $bitmap.Save(
+    (Join-Path (Resolve-Path 'web\public') $name),
+    [System.Drawing.Imaging.ImageFormat]::Png
+  )
+  $graphics.Dispose()
+  $bitmap.Dispose()
+}
+$source.Dispose()
+```
+
 ## Everyday PowerShell commands
 
 | Command                                           | What it does                                                                          |

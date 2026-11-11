@@ -53,7 +53,9 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000). See the web app README for
-its scripts and the current integration status.
+its scripts and the current integration status. The website includes a
+progressively installable PWA; its private dashboard still requires a network
+connection.
 
 ## Install for development
 
