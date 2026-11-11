@@ -67,9 +67,10 @@ and retried safely.
   (`in_office`/`not_in_office`/`unknown`), status source
   (`manual`/`schedule`/`location`), expiry time, `updated_at`.
 - `tracked_sites`: `id`, `user_id`, hostname, label, URL, last title,
-  last-visited time, last stale-notification time, `created_at`, `updated_at`,
-  optional `deleted_at`.
-- `saved_pages`: `id`, `user_id`, title, URL, selected text, `saved_at`,
+  favicon URL, last-visited time, last stale-notification time, `created_at`,
+  `updated_at`, optional `deleted_at`.
+- `saved_pages`: `id`, `user_id`, title, URL, selected text, collection
+  (`read_later` or `keep_forever`), `saved_at`, optional `expires_at`,
   `updated_at`, optional `deleted_at`.
 - `sync_changes` (only if needed): user ID, record type/ID, operation,
   server sequence or version, and timestamps for change-feed or diagnostics.
@@ -138,6 +139,35 @@ pages, but leave the resume local. If cross-device resume access is requested,
 add a separate opt-in upload to a private per-user bucket, with file-size/type
 limits, signed access, replacement/deletion controls, and a clear statement
 that uploaded files leave the device.
+
+## Saved-pages library and retention
+
+The extension's **Manage** tab lists tracked job sites and saved pages with
+explicit, confirmed delete actions. Add the same management surface to the
+website. Keep the Job sites home view focused on opening site icons; deleting a
+record should not be possible through a tiny control over an icon.
+
+Give saved articles/blogs two clear destinations:
+
+- **Read later:** a queue for pages the user intends to read soon. Let the user
+  choose an expiry period (recommend a configurable default such as 30 days).
+  Show the expiry date and offer **Keep forever** or **Renew** before it
+  expires. Clean up expired items automatically on app startup or a daily
+  maintenance run.
+- **Keep forever:** a library that is not automatically expired. The user can
+  still remove an item explicitly.
+
+Show separate counts for each collection, support search and sorting, and
+provide an easy move action between **Read later** and **Keep forever**. Warn
+before bulk delete. Prefer an undo/recycle-bin grace period if practical; if
+an item is permanently removed after expiry, explain the retention behavior
+before the user saves it.
+
+For two-way sync, synchronize the collection and expiry fields as part of the
+saved-page record. Apply expiry consistently using UTC timestamps; an offline
+device must not resurrect an expired/deleted item on its next sync. Preserve
+the current behavior for existing saved pages by migrating them to
+**Keep forever** unless the user chooses otherwise.
 
 ## Job notifications, office hours, and optional location
 
@@ -311,6 +341,19 @@ denied without breaking the schedule-based behavior.
 progress summary, last-updated time, and safe tap-through, with documented OS
 refresh limitations and sign-out/cache-clearing behavior.
 
+### Phase 8 — Saved-pages retention and record management
+
+- Add the website **Manage** page for deleting tracked sites and saved pages
+  with confirmation; keep delete controls off the compact site-icon grid.
+- Add **Read later** and **Keep forever** collections, configurable read-later
+  expiry, renewal/move actions, and clear expiry dates.
+- Add expiry cleanup and sync-safe deletion/migration behavior; preserve
+  existing saved pages as **Keep forever**.
+
+**Done when:** users can find and explicitly delete any saved site/page, read
+later items expire according to the displayed policy, and forever items do not
+expire unless explicitly removed.
+
 ## Risks and recommendations
 
 - **Privacy:** Personal details and resume documents are sensitive. Collect
@@ -341,6 +384,9 @@ refresh limitations and sign-out/cache-clearing behavior.
   reminder cycle. Do not include site names in the OS notification.
 - **A website install is not a native widget:** Budget for native platform
   work if Android/iOS home-screen widgets are a confirmed requirement.
+- **Retention must be obvious:** Clearly distinguish temporary reading-queue
+  items from saved-forever pages, show expiry dates, and do not silently apply
+  a short expiry to existing saved pages.
 
 ## Suggested first-release scope
 

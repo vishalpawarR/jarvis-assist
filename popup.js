@@ -6,7 +6,9 @@ const RESUME_STORE_NAME = "files";
 let activeTab;
 
 const trackedSitesElement = document.getElementById("tracked-sites");
+const managedSitesElement = document.getElementById("managed-sites");
 const savedPagesElement = document.getElementById("saved-pages");
+const managedPagesElement = document.getElementById("managed-pages");
 const siteMessage = document.getElementById("site-message");
 const resumeMessage = document.getElementById("resume-message");
 
@@ -56,7 +58,6 @@ async function renderSites() {
     const daysSince = Math.max(0, Math.floor((Date.now() - lastVisitedAt) / 86_400_000));
     const row = document.createElement("div");
     row.className = "site-item";
-    if (daysSince >= 7) row.classList.add("stale");
     const link = document.createElement("a");
     link.className = `site-link${daysSince >= 7 ? " stale" : ""}`;
     link.href = site.url;
@@ -68,13 +69,20 @@ async function renderSites() {
     const icon = document.createElement("img");
     icon.className = "site-icon";
     icon.alt = "";
-    icon.src = `chrome://favicon2/?size=32&scale_factor=1x&page_url=${encodeURIComponent(site.url)}`;
+    const iconCandidates = getFaviconCandidates(site);
+    let iconIndex = 0;
     icon.addEventListener("error", () => {
+      iconIndex += 1;
+      if (iconIndex < iconCandidates.length) {
+        icon.src = iconCandidates[iconIndex];
+        return;
+      }
       const fallback = document.createElement("span");
       fallback.className = "site-icon-fallback";
       fallback.textContent = (site.hostname || "?").slice(0, 1).toUpperCase();
       icon.replaceWith(fallback);
-    }, { once: true });
+    });
+    icon.src = iconCandidates[iconIndex];
     link.append(icon);
     const ageBadge = document.createElement("span");
     ageBadge.className = `site-age${daysSince >= 7 ? " stale" : ""}`;
@@ -82,20 +90,61 @@ async function renderSites() {
     ageBadge.setAttribute("aria-hidden", "true");
     link.append(ageBadge);
 
+    row.append(link);
+    trackedSitesElement.append(row);
+  }
+}
+
+function getFaviconCandidates(site) {
+  const candidates = [];
+  if (site.faviconUrl && /^https?:\/\//i.test(site.faviconUrl)) {
+    candidates.push(site.faviconUrl);
+  }
+  try {
+    const origin = new URL(site.url).origin;
+    candidates.push(`${origin}/favicon.ico`);
+    candidates.push(`chrome://favicon2/?size=64&scale_factor=2x&page_url=${encodeURIComponent(site.url)}`);
+  } catch (error) {
+    console.warn("Jarvis could not determine the website favicon.", error);
+  }
+  return [...new Set(candidates)];
+}
+
+async function renderManagedSites() {
+  const result = await chrome.storage.local.get(TRACKED_SITES_KEY);
+  const sites = result[TRACKED_SITES_KEY] ?? [];
+  managedSitesElement.replaceChildren();
+  if (!sites.length) {
+    const empty = document.createElement("p");
+    empty.className = "hint";
+    empty.textContent = "No tracked sites to manage.";
+    managedSitesElement.append(empty);
+    return;
+  }
+
+  for (const site of sites) {
+    const item = document.createElement("div");
+    item.className = "manage-item";
+    const details = document.createElement("div");
+    const name = document.createElement("strong");
+    name.textContent = site.label || site.hostname;
+    const url = document.createElement("div");
+    url.className = "saved-snippet";
+    url.textContent = site.url;
+    details.append(name, url);
     const remove = document.createElement("button");
     remove.type = "button";
-    remove.className = "remove-site";
-    remove.textContent = "×";
-    remove.setAttribute("aria-label", `Delete ${site.hostname}`);
-    remove.title = `Delete ${site.hostname}`;
+    remove.className = "button button-danger";
+    remove.textContent = "Delete";
     remove.addEventListener("click", async () => {
+      if (!confirm(`Delete ${site.label || site.hostname} from tracked job sites?`)) return;
       const current = await chrome.storage.local.get(TRACKED_SITES_KEY);
-      const updated = (current[TRACKED_SITES_KEY] ?? []).filter((item) => item.id !== site.id);
+      const updated = (current[TRACKED_SITES_KEY] ?? []).filter((entry) => entry.id !== site.id);
       await chrome.storage.local.set({ [TRACKED_SITES_KEY]: updated });
-      await renderSites();
+      await renderManagedSites();
     });
-    row.append(link, remove);
-    trackedSitesElement.append(row);
+    item.append(details, remove);
+    managedSitesElement.append(item);
   }
 }
 
@@ -175,6 +224,48 @@ async function renderSavedPages(query = "") {
   }
 }
 
+async function renderManagedPages() {
+  const result = await chrome.storage.local.get(SAVED_PAGES_KEY);
+  const pages = result[SAVED_PAGES_KEY] ?? [];
+  managedPagesElement.replaceChildren();
+  if (!pages.length) {
+    const empty = document.createElement("p");
+    empty.className = "hint";
+    empty.textContent = "No saved pages to manage.";
+    managedPagesElement.append(empty);
+    return;
+  }
+
+  for (const page of pages) {
+    const item = document.createElement("div");
+    item.className = "manage-item";
+    const details = document.createElement("div");
+    const link = document.createElement("a");
+    link.className = "saved-title";
+    link.href = page.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = page.title || page.url;
+    const url = document.createElement("div");
+    url.className = "saved-snippet";
+    url.textContent = page.url;
+    details.append(link, url);
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "button button-danger";
+    remove.textContent = "Delete";
+    remove.addEventListener("click", async () => {
+      if (!confirm(`Delete “${page.title || page.url}” from saved pages?`)) return;
+      const current = await chrome.storage.local.get(SAVED_PAGES_KEY);
+      const updated = (current[SAVED_PAGES_KEY] ?? []).filter((entry) => entry.id !== page.id);
+      await chrome.storage.local.set({ [SAVED_PAGES_KEY]: updated });
+      await renderManagedPages();
+    });
+    item.append(details, remove);
+    managedPagesElement.append(item);
+  }
+}
+
 async function initialize() {
   const [tabs, resume] = await Promise.all([
     chrome.tabs.query({ active: true, currentWindow: true }),
@@ -190,7 +281,13 @@ async function initialize() {
   }
   document.getElementById("open-resume").disabled = !resume;
   if (resume) resumeMessage.textContent = `Saved locally: ${resume.name}`;
-  await Promise.all([renderSites(), renderSavedPages(), renderPersonalInfo()]);
+  await Promise.all([
+    renderSites(),
+    renderManagedSites(),
+    renderSavedPages(),
+    renderManagedPages(),
+    renderPersonalInfo(),
+  ]);
   const requestedTab = new URLSearchParams(location.search).get("tab");
   if (requestedTab) {
     document.querySelector(`.tab[data-tab="${CSS.escape(requestedTab)}"]`)?.click();
@@ -214,15 +311,16 @@ document.querySelectorAll(".tab").forEach((tab) => {
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== "local") return;
   if (changes[TRACKED_SITES_KEY]) {
-    renderSites().catch((error) => {
+    Promise.all([renderSites(), renderManagedSites()]).catch((error) => {
       console.error("Jarvis could not refresh tracked job sites.", error);
-      trackedSitesElement.textContent = "Could not load tracked sites.";
     });
   }
   if (changes[SAVED_PAGES_KEY]) {
-    renderSavedPages(document.getElementById("saved-search").value).catch((error) => {
+    Promise.all([
+      renderSavedPages(document.getElementById("saved-search").value),
+      renderManagedPages(),
+    ]).catch((error) => {
       console.error("Jarvis could not refresh saved pages.", error);
-      savedPagesElement.textContent = "Could not load saved pages.";
     });
   }
 });
@@ -276,7 +374,9 @@ document.getElementById("track-current").addEventListener("click", async () => {
     hostname: url.hostname,
     label: activeTab.title || url.hostname,
     url: url.origin,
+    faviconUrl: activeTab.favIconUrl || "",
     lastTitle: activeTab.title || "",
+    faviconUrl: activeTab.favIconUrl || "",
     createdAt: Date.now(),
     lastVisitedAt: Date.now(),
   });

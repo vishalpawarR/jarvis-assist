@@ -18,11 +18,14 @@ item's status as it is planned, built, and tested.
   current status.
 - [~] **Last-visited information** — Show when each tracked website was last
   opened and how many days ago. Let the user edit or remove tracked entries.
-- [x] **Site icons and deletion** — Show each tracked website's browser favicon
-  (with a letter fallback) and let the user delete it from the tracker.
+- [x] **Site icons and deletion** — Show each tracked website's favicon
+  (with a letter fallback); manage deletions from a separate confirmed-delete
+  page rather than a small control on the icon grid.
 - [x] **Inactive-site age and reminders** — Show days since each tracked site
   was visited, outline icons in red after seven days, and send a generic
   browser notification once per stale period.
+- [x] **Saved record management** — Add a separate extension tab for managing
+  tracked sites and saved pages, with explicit confirmed delete actions.
 - [~] **Save and retrieve information** — Save useful details from a website
   and find them later, with an explicit user action before saving.
 - [x] **Personal details and quick copy** — Save contact fields locally and

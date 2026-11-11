@@ -20,6 +20,7 @@
         <button class="tab active" id="sites-tab" role="tab" aria-selected="true" aria-controls="sites-panel" data-tab="sites">Job sites</button>
         <button class="tab" id="personal-tab" role="tab" aria-selected="false" aria-controls="personal-panel" data-tab="personal" tabindex="-1">My details</button>
         <button class="tab" id="saved-tab" role="tab" aria-selected="false" aria-controls="saved-panel" data-tab="saved" tabindex="-1">Saved pages</button>
+        <button class="tab" id="manage-tab" role="tab" aria-selected="false" aria-controls="manage-panel" data-tab="manage" tabindex="-1">Manage</button>
         <button class="tab" id="resume-tab" role="tab" aria-selected="false" aria-controls="resume-panel" data-tab="resume" tabindex="-1">Resume</button>
       </nav>
 
@@ -60,6 +61,15 @@
         <label class="sr-only" for="saved-search">Search saved pages</label>
         <input id="saved-search" type="search" placeholder="Search saved pages">
         <div id="saved-pages"></div>
+      </section>
+
+      <section class="tab-panel hidden" id="manage-panel" role="tabpanel" aria-labelledby="manage-tab" hidden>
+        <h2>Tracked job sites</h2>
+        <div id="managed-sites"></div>
+        <div class="manage-section">
+          <h2>Saved pages</h2>
+          <div id="managed-pages"></div>
+        </div>
       </section>
 
       <section class="tab-panel hidden" id="resume-panel" role="tabpanel" aria-labelledby="resume-tab" hidden>

@@ -26,8 +26,11 @@ page and refresh the website tab.
 - Click a saved personal detail in the floating panel to copy it.
 - Search saved pages from the extension popup's dedicated **Saved pages** tab.
 - Search saved pages and reopen them from the extension menu.
-- Use top-level tabs for job sites, personal details, and saved pages/resume.
+- Use top-level tabs for job sites, personal details, saved pages, management,
+  and resume.
 - Track a website, see its favicon and last-visited age, and delete it.
+- The Job sites tab shows circular site icons only. Manage tracked-site and
+  saved-page deletions from the separate **Manage** tab, with confirmation.
 - See a day-count badge on each job-site icon; the icon gets a red outline
   after seven days without a visit. Jarvis sends one generic browser reminder
   when a site first becomes stale; visiting it starts a new reminder cycle.

@@ -201,6 +201,7 @@
         hostname,
         label: document.title.trim() || hostname,
         url: location.origin,
+        faviconUrl: document.querySelector('link[rel~="icon"]')?.href || "",
         lastTitle: document.title,
         createdAt: Date.now(),
         lastVisitedAt: Date.now(),
