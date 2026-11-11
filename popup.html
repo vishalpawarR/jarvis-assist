@@ -16,9 +16,15 @@
         </div>
       </header>
 
-      <section>
+      <nav class="tabs" role="tablist" aria-label="Jarvis sections">
+        <button class="tab active" id="sites-tab" role="tab" aria-selected="true" aria-controls="sites-panel" data-tab="sites">Job sites</button>
+        <button class="tab" id="personal-tab" role="tab" aria-selected="false" aria-controls="personal-panel" data-tab="personal">My details</button>
+        <button class="tab" id="saved-tab" role="tab" aria-selected="false" aria-controls="saved-panel" data-tab="saved">Saved & resume</button>
+      </nav>
+
+      <section class="tab-panel" id="sites-panel" role="tabpanel" aria-labelledby="sites-tab">
         <div class="section-heading">
-          <h2>Job sites</h2>
+          <h2>Tracked websites</h2>
           <button id="track-current" class="button button-primary">Track current site</button>
         </div>
         <p id="active-site" class="hint">Checking the active tab…</p>
@@ -26,31 +32,53 @@
         <div id="tracked-sites"></div>
       </section>
 
-      <section>
-        <div class="section-heading">
-          <h2>Saved pages</h2>
-        </div>
+      <section class="tab-panel hidden" id="personal-panel" role="tabpanel" aria-labelledby="personal-tab" hidden>
+        <h2>Personal details</h2>
+        <p class="hint">Saved only in this browser. Click a saved value to copy it.</p>
+        <form id="personal-form">
+          <label for="full-name">Full name</label>
+          <input id="full-name" name="fullName" autocomplete="name">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email">
+          <label for="phone">Mobile number</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel">
+          <label for="location">Location</label>
+          <input id="location" name="location" autocomplete="address-level2">
+          <label for="linkedin">LinkedIn URL</label>
+          <input id="linkedin" name="linkedin" type="url" autocomplete="url" placeholder="https://linkedin.com/in/...">
+          <div class="button-row">
+            <button type="submit" class="button button-primary">Save details</button>
+            <button type="button" id="clear-personal" class="button">Clear</button>
+          </div>
+        </form>
+        <p id="personal-message" class="message" role="status"></p>
+        <div id="personal-values" aria-label="Saved details to copy"></div>
+      </section>
+
+      <section class="tab-panel hidden" id="saved-panel" role="tabpanel" aria-labelledby="saved-tab" hidden>
+        <h2>Saved pages</h2>
         <label class="sr-only" for="saved-search">Search saved pages</label>
         <input id="saved-search" type="search" placeholder="Search saved pages">
         <div id="saved-pages"></div>
-      </section>
 
-      <section>
-        <h2>Resume</h2>
-        <p class="hint">Choose a PDF once to keep a local copy for quick access.</p>
-        <div class="button-row">
-          <button id="choose-resume" class="button">Choose PDF</button>
-          <button id="open-resume" class="button" disabled>Open resume</button>
+        <div class="resume-section">
+          <h2>Resume</h2>
+          <p class="hint">Choose a PDF to keep a private copy in this browser.</p>
+          <div class="button-row">
+            <button id="choose-resume" class="button">Choose PDF</button>
+            <button id="open-resume" class="button" disabled>Open resume</button>
+          </div>
+          <input id="resume-file" type="file" accept="application/pdf,.pdf" hidden>
+          <p id="resume-message" class="message" role="status"></p>
+          <p class="hint">To open its folder, Jarvis can save a copy under Downloads/Jarvis Resume and show that folder. Browser extensions cannot reveal the original file's folder.</p>
         </div>
-        <input id="resume-file" type="file" accept="application/pdf,.pdf" hidden>
-        <p id="resume-message" class="message" role="status"></p>
-      </section>
 
-      <section class="footer-section">
-        <h2>Your data</h2>
-        <p class="hint">Tracked sites and saved pages remain in this browser.</p>
-        <button id="export-data" class="button">Export my data</button>
-        <p id="export-message" class="message" role="status"></p>
+        <div class="export-section">
+          <h2>Your data</h2>
+          <p class="hint">Tracked sites, saved pages, and personal details remain in this browser.</p>
+          <button id="export-data" class="button">Export my data</button>
+          <p id="export-message" class="message" role="status"></p>
+        </div>
       </section>
     </main>
     <script src="popup.js"></script>

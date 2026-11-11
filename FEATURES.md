@@ -18,8 +18,15 @@ item's status as it is planned, built, and tested.
   current status.
 - [~] **Last-visited information** — Show when each tracked website was last
   opened and how many days ago. Let the user edit or remove tracked entries.
+- [x] **Site icons and deletion** — Show each tracked website's browser favicon
+  (with a letter fallback) and let the user delete it from the tracker.
 - [~] **Save and retrieve information** — Save useful details from a website
   and find them later, with an explicit user action before saving.
+- [x] **Personal details and quick copy** — Save contact fields locally and
+  copy an individual saved value, such as a mobile number, with one click.
+- [x] **Resume folder shortcut** — Allow the user to save a resume copy under
+  Downloads/Jarvis Resume and reveal that copy's folder. The original source
+  folder cannot be revealed by a normal browser extension.
 
 ## Suggested additions
 

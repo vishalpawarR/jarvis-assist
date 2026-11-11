@@ -20,16 +20,23 @@ page and refresh the website tab.
 - Copy page title or URL, and copy selected text when present.
 - Explicitly save the current page and selected text for later.
 - Search saved pages and reopen them from the extension menu.
-- Track a website and display its last-visited age in days.
+- Use top-level tabs for job sites, personal details, and saved pages/resume.
+- Track a website, see its favicon and last-visited age, and delete it.
+- Save contact details locally and click a saved value to copy it.
 - Pick a PDF resume and reopen it in an extension viewer.
-- Export tracked-site and saved-page data as JSON.
+- Save a resume copy under Downloads/Jarvis Resume and open that folder.
+- Export tracked-site, saved-page, and personal details as JSON.
 - Store extension data in local browser storage; there is no account or server.
 
 ## Browser limitations and privacy
 
 Browser extensions cannot silently inspect arbitrary folders or open a native
-file-explorer window at a chosen path. Choose your resume through the file
-picker; Jarvis stores the selected PDF locally in extension storage. The
+file-explorer window at the original file's path. Choose your resume through
+the file picker; Jarvis stores the selected PDF locally in extension storage.
+The resume viewer can create a copy under Downloads/Jarvis Resume and ask the
+browser to reveal that downloaded copy in the file manager. Personal details
+are stored in the browser profile's local extension storage and are not sent
+to a Jarvis server. The
 floating page button is unavailable on browser-internal pages, extension
 stores, and some protected pages. Page details are only saved when you click
 **Save this page**.

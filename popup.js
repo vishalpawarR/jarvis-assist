@@ -1,5 +1,6 @@
 const TRACKED_SITES_KEY = "jarvisTrackedSites";
 const SAVED_PAGES_KEY = "jarvisSavedPages";
+const PERSONAL_INFO_KEY = "jarvisPersonalInfo";
 const RESUME_DB_NAME = "jarvisResume";
 const RESUME_STORE_NAME = "files";
 let activeTab;
@@ -57,7 +58,19 @@ async function renderSites() {
   for (const site of sites) {
     const row = document.createElement("div");
     row.className = "site-item";
+    const icon = document.createElement("img");
+    icon.className = "site-icon";
+    icon.alt = "";
+    icon.src = `chrome://favicon2/?size=32&scale_factor=1x&page_url=${encodeURIComponent(site.url)}`;
+    icon.addEventListener("error", () => {
+      const fallback = document.createElement("span");
+      fallback.className = "site-icon-fallback";
+      fallback.textContent = (site.hostname || "?").slice(0, 1).toUpperCase();
+      icon.replaceWith(fallback);
+    }, { once: true });
+
     const details = document.createElement("div");
+    details.className = "site-details";
     const name = document.createElement("div");
     name.className = "site-name";
     const link = document.createElement("a");
@@ -75,16 +88,59 @@ async function renderSites() {
     const remove = document.createElement("button");
     remove.type = "button";
     remove.className = "remove-site";
-    remove.textContent = "Remove";
-    remove.setAttribute("aria-label", `Remove ${site.hostname}`);
+    remove.textContent = "Delete";
+    remove.setAttribute("aria-label", `Delete ${site.hostname}`);
     remove.addEventListener("click", async () => {
       const current = await chrome.storage.local.get(TRACKED_SITES_KEY);
       const updated = (current[TRACKED_SITES_KEY] ?? []).filter((item) => item.id !== site.id);
       await chrome.storage.local.set({ [TRACKED_SITES_KEY]: updated });
       await renderSites();
     });
-    row.append(details, remove);
+    row.append(icon, details, remove);
     trackedSitesElement.append(row);
+  }
+}
+
+async function renderPersonalInfo() {
+  const result = await chrome.storage.local.get(PERSONAL_INFO_KEY);
+  const personalInfo = result[PERSONAL_INFO_KEY] ?? {};
+  const form = document.getElementById("personal-form");
+  for (const field of form.elements) {
+    if (field.name && Object.hasOwn(personalInfo, field.name)) {
+      field.value = personalInfo[field.name];
+    }
+  }
+
+  const values = document.getElementById("personal-values");
+  values.replaceChildren();
+  const labels = {
+    fullName: "Full name",
+    email: "Email",
+    phone: "Mobile number",
+    location: "Location",
+    linkedin: "LinkedIn",
+  };
+  for (const [key, label] of Object.entries(labels)) {
+    if (!personalInfo[key]) continue;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "copy-value";
+    button.setAttribute("aria-label", `Copy ${label}`);
+    const value = document.createElement("strong");
+    value.textContent = personalInfo[key];
+    const hint = document.createElement("span");
+    hint.textContent = `${label} · click to copy`;
+    button.append(value, hint);
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(personalInfo[key]);
+        document.getElementById("personal-message").textContent = `${label} copied to clipboard.`;
+      } catch (error) {
+        console.error(`Jarvis could not copy ${label}.`, error);
+        document.getElementById("personal-message").textContent = `Could not copy ${label}.`;
+      }
+    });
+    values.append(button);
   }
 }
 
@@ -137,8 +193,50 @@ async function initialize() {
   }
   document.getElementById("open-resume").disabled = !resume;
   if (resume) resumeMessage.textContent = `Saved locally: ${resume.name}`;
-  await Promise.all([renderSites(), renderSavedPages()]);
+  await Promise.all([renderSites(), renderSavedPages(), renderPersonalInfo()]);
 }
+
+document.querySelectorAll(".tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((candidate) => {
+      const selected = candidate === tab;
+      candidate.classList.toggle("active", selected);
+      candidate.setAttribute("aria-selected", String(selected));
+      candidate.tabIndex = selected ? 0 : -1;
+    });
+    document.querySelectorAll(".tab-panel").forEach((panel) => {
+      panel.hidden = panel.id !== tab.getAttribute("aria-controls");
+    });
+  });
+});
+
+document.getElementById("personal-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const info = Object.fromEntries(new FormData(event.currentTarget).entries());
+  for (const [key, value] of Object.entries(info)) {
+    info[key] = value.trim();
+  }
+  try {
+    await chrome.storage.local.set({ [PERSONAL_INFO_KEY]: info });
+    document.getElementById("personal-message").textContent = "Personal details saved on this device.";
+    await renderPersonalInfo();
+  } catch (error) {
+    console.error("Jarvis could not save personal details.", error);
+    document.getElementById("personal-message").textContent = "Could not save your details.";
+  }
+});
+
+document.getElementById("clear-personal").addEventListener("click", async () => {
+  try {
+    await chrome.storage.local.remove(PERSONAL_INFO_KEY);
+    document.getElementById("personal-form").reset();
+    document.getElementById("personal-message").textContent = "Personal details cleared.";
+    await renderPersonalInfo();
+  } catch (error) {
+    console.error("Jarvis could not clear personal details.", error);
+    document.getElementById("personal-message").textContent = "Could not clear your details.";
+  }
+});
 
 document.getElementById("track-current").addEventListener("click", async () => {
   let url;
@@ -215,7 +313,7 @@ document.getElementById("open-resume").addEventListener("click", async () => {
 
 document.getElementById("export-data").addEventListener("click", async () => {
   try {
-    const data = await chrome.storage.local.get([TRACKED_SITES_KEY, SAVED_PAGES_KEY]);
+    const data = await chrome.storage.local.get([TRACKED_SITES_KEY, SAVED_PAGES_KEY, PERSONAL_INFO_KEY]);
     const blob = new Blob([JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), ...data }, null, 2)], {
       type: "application/json",
     });
