@@ -5,6 +5,7 @@
 
   const TRACKED_SITES_KEY = "jarvisTrackedSites";
   const SAVED_PAGES_KEY = "jarvisSavedPages";
+  const PERSONAL_INFO_KEY = "jarvisPersonalInfo";
   const host = document.createElement("div");
   host.id = "jarvis-assistant-host";
   host.style.setProperty("all", "initial", "important");
@@ -30,15 +31,11 @@
       font: 14px/1.45 system-ui, sans-serif;
     }
     .hidden { display: none; }
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
     h2 { margin: 0; font-size: 19px; letter-spacing: -.03em; }
-    h3 { margin: 19px 0 9px; font-size: 14px; }
-    p { margin: 5px 0 10px; color: #656981; overflow-wrap: anywhere; }
-    .close, .remove { border: 0; background: transparent; color: #626782; cursor: pointer; font: inherit; }
+    h3 { margin: 16px 0 7px; font-size: 14px; }
+    .close { border: 0; background: transparent; color: #626782; cursor: pointer; font: inherit; }
     .close { font-size: 21px; }
-    .item { padding: 11px 0; border-top: 1px solid #eceef5; }
-    .item strong { display: block; overflow-wrap: anywhere; }
-    .muted { color: #777b91; font-size: 12px; }
     .row { display: flex; gap: 8px; margin-top: 9px; }
     button.action {
       min-height: 36px; border: 1px solid #dfe2ee; border-radius: 9px; padding: 7px 10px;
@@ -46,8 +43,15 @@
     }
     button.primary { border-color: #5146d8; background: #5146d8; color: white; }
     button.action:hover { filter: brightness(.97); }
-    .notice { min-height: 18px; margin-top: 8px; color: #3931a3; font-size: 12px; }
-    .empty { color: #777b91; font-size: 13px; }
+    .details { border-top: 1px solid #eceef5; }
+    .detail {
+      display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 10px 0; border: 0; border-bottom: 1px solid #eceef5; background: transparent;
+      color: #3931a3; cursor: pointer; text-align: left; font: 600 13px/1.4 system-ui, sans-serif;
+    }
+    .detail-value { min-width: 0; overflow-wrap: anywhere; }
+    .detail-label { flex: 0 0 auto; color: #777b91; font-size: 11px; font-weight: 500; }
+    .empty { margin: 4px 0 10px; color: #777b91; font: 12px/1.4 system-ui, sans-serif; }
   `;
   shadow.append(style);
 
@@ -102,106 +106,110 @@
     panel.append(header);
 
     const title = document.title.trim() || location.hostname;
-    addText(panel, "p", title);
-    addText(panel, "p", location.href, "muted");
-
     const selection = window.getSelection()?.toString().trim() ?? "";
-    if (selection) {
-      addText(panel, "h3", "Selected text");
-      addText(panel, "p", selection);
-    }
-
-    const copyRow = document.createElement("div");
-    copyRow.className = "row";
-    const notice = addText(panel, "div", "", "notice");
-    copyRow.append(
-      makeButton("Copy title", () => copyText(title, notice)),
-      makeButton("Copy URL", () => copyText(location.href, notice)),
-    );
-    if (selection) copyRow.append(makeButton("Copy selection", () => copyText(selection, notice)));
-    panel.append(copyRow);
 
     const controls = document.createElement("div");
     controls.className = "row";
-    controls.append(
-      makeButton("Save this page", () => savePage(title, selection, notice), true),
-      makeButton("Save as job site", () => trackCurrentSite(notice)),
-    );
+    const savePageButton = makeButton("Save this page", () => savePage(title, selection, savePageButton), true);
+    const trackSiteButton = makeButton("Save as job site", () => trackCurrentSite(trackSiteButton));
+    controls.append(savePageButton, trackSiteButton);
     panel.append(controls);
-    panel.append(makeButton("Open resume", () => openResume(notice)));
+    const resumeButton = makeButton("Open resume", () => openResume(resumeButton));
+    panel.append(resumeButton);
 
-    const result = await chrome.storage.local.get(SAVED_PAGES_KEY);
-    const savedPages = result[SAVED_PAGES_KEY] ?? [];
-    addText(panel, "h3", `Saved pages (${savedPages.length})`);
-    if (!savedPages.length) {
-      addText(panel, "p", "Saved pages stay on this device.", "empty");
-    }
-    for (const page of savedPages.slice(0, 5)) {
-      const item = document.createElement("div");
-      item.className = "item";
-      addText(item, "strong", page.title);
-      const link = document.createElement("a");
-      link.href = page.url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = page.url;
-      link.className = "muted";
-      item.append(link);
-      if (page.selection) addText(item, "p", page.selection);
-      panel.append(item);
+    const result = await chrome.storage.local.get(PERSONAL_INFO_KEY);
+    const personalInfo = result[PERSONAL_INFO_KEY] ?? {};
+    const labels = {
+      fullName: "Full name",
+      email: "Email",
+      phone: "Mobile",
+      location: "Location",
+      linkedin: "LinkedIn",
+    };
+    const entries = Object.entries(labels).filter(([key]) => personalInfo[key]);
+    addText(panel, "h3", "My details");
+    if (!entries.length) {
+      addText(panel, "p", "Add your details in the Jarvis extension popup.", "empty");
+    } else {
+      const details = document.createElement("div");
+      details.className = "details";
+      for (const [key, label] of entries) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "detail";
+        button.setAttribute("aria-label", `Copy ${label}: ${personalInfo[key]}`);
+        addText(button, "span", personalInfo[key], "detail-value");
+        const caption = addText(button, "span", label, "detail-label");
+        button.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(personalInfo[key]);
+            caption.textContent = "Copied";
+            setTimeout(() => { caption.textContent = label; }, 1200);
+          } catch (error) {
+            console.error(`Jarvis could not copy ${label}.`, error);
+            caption.textContent = "Copy failed";
+            setTimeout(() => { caption.textContent = label; }, 1600);
+          }
+        });
+        details.append(button);
+      }
+      panel.append(details);
     }
   }
 
-  async function copyText(value, notice) {
-    try {
-      await navigator.clipboard.writeText(value);
-      notice.textContent = "Copied to clipboard.";
-    } catch (error) {
-      console.error("Jarvis could not copy the text.", error);
-      notice.textContent = "Copy failed. Check this site's clipboard permission.";
-    }
+  function showButtonResult(button, message, originalLabel) {
+    button.textContent = message;
+    setTimeout(() => { button.textContent = originalLabel; }, 1400);
   }
 
-  async function savePage(title, selection, notice) {
-    const result = await chrome.storage.local.get(SAVED_PAGES_KEY);
-    const pages = result[SAVED_PAGES_KEY] ?? [];
-    if (!pages.some((page) => page.url === location.href)) {
-      pages.unshift({ id: crypto.randomUUID(), title, url: location.href, selection, savedAt: Date.now() });
-      await chrome.storage.local.set({ [SAVED_PAGES_KEY]: pages });
-    }
-    notice.textContent = "Page saved on this device.";
-    render();
-  }
-
-  async function trackCurrentSite(notice) {
-    const hostname = location.hostname;
-    const result = await chrome.storage.local.get(TRACKED_SITES_KEY);
-    const sites = result[TRACKED_SITES_KEY] ?? [];
-    if (sites.some((site) => site.hostname === hostname)) {
-      notice.textContent = "This site is already tracked.";
-      return;
-    }
-    sites.unshift({
-      id: crypto.randomUUID(),
-      hostname,
-      label: document.title.trim() || hostname,
-      url: location.origin,
-      lastTitle: document.title,
-      createdAt: Date.now(),
-      lastVisitedAt: Date.now(),
-    });
-    await chrome.storage.local.set({ [TRACKED_SITES_KEY]: sites });
-    notice.textContent = "Site added to your tracker.";
-    render();
-  }
-
-  async function openResume(notice) {
+  async function openResume(button) {
     try {
       const response = await chrome.runtime.sendMessage({ type: "jarvis:open-resume" });
-      if (!response?.ok) notice.textContent = "Could not open the resume.";
+      showButtonResult(button, response?.ok ? "Resume opened" : "Could not open", "Open resume");
     } catch (error) {
       console.error("Jarvis could not open the saved resume.", error);
-      notice.textContent = "Could not open the resume. Try the extension menu.";
+      showButtonResult(button, "Could not open", "Open resume");
+    }
+  }
+
+  async function savePage(title, selection, button) {
+    try {
+      const result = await chrome.storage.local.get(SAVED_PAGES_KEY);
+      const pages = result[SAVED_PAGES_KEY] ?? [];
+      if (!pages.some((page) => page.url === location.href)) {
+        pages.unshift({ id: crypto.randomUUID(), title, url: location.href, selection, savedAt: Date.now() });
+        await chrome.storage.local.set({ [SAVED_PAGES_KEY]: pages });
+      }
+      showButtonResult(button, "Page saved", "Save this page");
+    } catch (error) {
+      console.error("Jarvis could not save this page.", error);
+      showButtonResult(button, "Save failed", "Save this page");
+    }
+  }
+
+  async function trackCurrentSite(button) {
+    try {
+      const hostname = location.hostname;
+      const result = await chrome.storage.local.get(TRACKED_SITES_KEY);
+      const sites = result[TRACKED_SITES_KEY] ?? [];
+      if (sites.some((site) => site.hostname === hostname)) {
+        showButtonResult(button, "Already tracked", "Save as job site");
+        return;
+      }
+      sites.unshift({
+        id: crypto.randomUUID(),
+        hostname,
+        label: document.title.trim() || hostname,
+        url: location.origin,
+        lastTitle: document.title,
+        createdAt: Date.now(),
+        lastVisitedAt: Date.now(),
+      });
+      await chrome.storage.local.set({ [TRACKED_SITES_KEY]: sites });
+      showButtonResult(button, "Job site saved", "Save as job site");
+    } catch (error) {
+      console.error("Jarvis could not save this job site.", error);
+      showButtonResult(button, "Save failed", "Save as job site");
     }
   }
 

@@ -19,7 +19,8 @@
       <nav class="tabs" role="tablist" aria-label="Jarvis sections">
         <button class="tab" id="sites-tab" role="tab" aria-selected="false" aria-controls="sites-panel" data-tab="sites" tabindex="-1">Job sites</button>
         <button class="tab active" id="personal-tab" role="tab" aria-selected="true" aria-controls="personal-panel" data-tab="personal">My details</button>
-        <button class="tab" id="saved-tab" role="tab" aria-selected="false" aria-controls="saved-panel" data-tab="saved" tabindex="-1">Saved & resume</button>
+        <button class="tab" id="saved-tab" role="tab" aria-selected="false" aria-controls="saved-panel" data-tab="saved" tabindex="-1">Saved pages</button>
+        <button class="tab" id="resume-tab" role="tab" aria-selected="false" aria-controls="resume-panel" data-tab="resume" tabindex="-1">Resume</button>
       </nav>
 
       <section class="tab-panel hidden" id="sites-panel" role="tabpanel" aria-labelledby="sites-tab" hidden>
@@ -60,7 +61,9 @@
         <label class="sr-only" for="saved-search">Search saved pages</label>
         <input id="saved-search" type="search" placeholder="Search saved pages">
         <div id="saved-pages"></div>
+      </section>
 
+      <section class="tab-panel hidden" id="resume-panel" role="tabpanel" aria-labelledby="resume-tab" hidden>
         <div class="resume-section">
           <h2>Resume</h2>
           <p class="hint">Choose a PDF to keep a private copy in this browser.</p>

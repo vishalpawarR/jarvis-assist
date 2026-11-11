@@ -32,6 +32,9 @@ item's status as it is planned, built, and tested.
   current page as a job site or save it as a page/article.
 - [x] **Popup default and floating-panel shortcut** — Open the extension popup
   on My details and provide a keyboard shortcut to toggle the floating panel.
+- [x] **Compact floating panel and saved-pages tab** — Keep saved-page browsing
+  in its own extension tab, remove title/URL copy controls and status text from
+  the floating panel, and show clickable personal details there.
 
 ## Suggested additions
 
