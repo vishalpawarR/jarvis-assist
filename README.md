@@ -37,7 +37,8 @@ The website's planner and architecture decisions stay in the shared root
 [`web/README.md`](web/README.md) for running the website. Track web feature
 status in [`docs/features/WEBSITE.md`](docs/features/WEBSITE.md). Follow
 [`supabase/README.md`](supabase/README.md) to configure a personal Supabase
-project; no credentials are committed and extension sync is not active.
+project; common Windows PowerShell, Git, and project commands are documented in
+[`docs/COMMANDS.md`](docs/COMMANDS.md).
 
 ## Web app (Next.js)
 
