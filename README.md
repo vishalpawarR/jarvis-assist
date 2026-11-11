@@ -34,8 +34,10 @@ tooling, while `web/` has its own package for Next.js dependencies and scripts.
 The website's planner and architecture decisions stay in the shared root
 [`docs/PLANNER.md`](docs/PLANNER.md) and
 [`docs/decisions/README.md`](docs/decisions/README.md); see
-[`web/README.md`](web/README.md) for running the website. Supabase is planned
-but is not configured in the app yet.
+[`web/README.md`](web/README.md) for running the website. Track web feature
+status in [`docs/features/WEBSITE.md`](docs/features/WEBSITE.md). Follow
+[`supabase/README.md`](supabase/README.md) to configure a personal Supabase
+project; no credentials are committed and extension sync is not active.
 
 ## Web app (Next.js)
 

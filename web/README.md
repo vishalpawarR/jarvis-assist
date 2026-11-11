@@ -20,14 +20,13 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Supabase status
 
-Supabase is not connected yet. No credentials or user data are required to run
-this starter. The shared product plan, including the recommended PostgreSQL,
-authentication, data model, and sync approach, is in
-[`../docs/PLANNER.md`](../docs/PLANNER.md). Architecture decisions are kept in
-[`../docs/decisions/README.md`](../docs/decisions/README.md), not copied into
-this app.
+The app includes email/password authentication, a protected dashboard, and
+feature modules for personal details, tracked sites, and saved pages. Supabase
+is not connected to a live project until you provide local credentials and
+apply the SQL migration. No extension data is uploaded or synced.
 
-When we set up Supabase, create a project first, then add only its URL and
-publishable key to a local `.env.local` file. Never put a service-role key in
-browser code or commit credentials. We will add the client, database migrations,
-and row-level security policies as separate, verifiable steps.
+Follow [`../supabase/README.md`](../supabase/README.md) to create and configure
+your project. Track website implementation and setup progress in
+[`../docs/features/WEBSITE.md`](../docs/features/WEBSITE.md). The shared
+product/sync plan is in [`../docs/PLANNER.md`](../docs/PLANNER.md), and
+architecture decisions are in [`../docs/decisions/README.md`](../docs/decisions/README.md).

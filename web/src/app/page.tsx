@@ -1,48 +1,93 @@
+import Link from "next/link";
+
+const features = [
+  ["Personal details", "Keep reusable application information in one private profile."],
+  ["Job sites", "Track career pages and maintain a focused list of opportunities."],
+  ["Saved pages", "Organize reading into a short-term queue or a keep-forever library."],
+];
+
 export default function Home() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 py-8 sm:px-10">
+    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-5 py-7 sm:px-8">
       <header className="flex items-center gap-3">
-        <div className="grid size-10 place-items-center rounded-xl bg-indigo-600 font-bold text-white">
-          J
-        </div>
-        <span className="text-lg font-semibold tracking-tight">Jarvis</span>
-        <span className="ml-auto rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-800">
-          Web app foundation
-        </span>
+        <span className="brand-icon">J</span>
+        <span className="text-lg font-semibold tracking-tight text-slate-950">Jarvis</span>
+        <nav className="ml-auto flex items-center gap-3">
+          <Link className="button-secondary" href="/login">
+            Sign in
+          </Link>
+          <Link className="button-primary" href="/signup">
+            Create account
+          </Link>
+        </nav>
       </header>
 
-      <section className="my-auto grid gap-10 py-20 md:grid-cols-[1.2fr_0.8fr] md:items-center">
+      <section className="grid gap-12 py-20 md:grid-cols-[1.1fr_0.9fr] md:items-center">
         <div>
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-indigo-700">
-            Your job search, in one place
-          </p>
-          <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-            A calmer home for your next opportunity.
+          <p className="eyebrow">A thoughtful job-search companion</p>
+          <h1 className="mt-4 max-w-2xl text-4xl font-semibold leading-tight tracking-tight text-slate-950 sm:text-6xl">
+            Keep the details of your search in one calm place.
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-8 text-slate-600">
-            Jarvis Web is the starting point for managing your job sites, saved pages, and personal
-            details alongside the browser extension.
+            Jarvis Web brings your career sites, saved reading, and application details into a
+            private workspace—alongside the browser extension.
           </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link className="button-primary" href="/signup">
+              Get started
+            </Link>
+            <a className="button-secondary" href="#features">
+              Explore features
+            </a>
+          </div>
         </div>
 
-        <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-3">
-            <span className="size-2.5 rounded-full bg-amber-400" aria-hidden="true" />
-            <h2 className="font-semibold text-slate-900">Local-only starter</h2>
+        <aside className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_24px_70px_-45px_rgba(15,23,42,0.35)]">
+          <p className="eyebrow">Your workspace</p>
+          <div className="mt-5 space-y-3">
+            {features.map(([title, description], index) => (
+              <div className="flex gap-4 rounded-2xl bg-slate-50 p-4" key={title}>
+                <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-indigo-100 text-sm font-semibold text-indigo-800">
+                  0{index + 1}
+                </span>
+                <div>
+                  <h2 className="font-semibold text-slate-900">{title}</h2>
+                  <p className="mt-1 text-sm leading-5 text-slate-600">{description}</p>
+                </div>
+              </div>
+            ))}
           </div>
-          <p className="mt-3 text-sm leading-6 text-slate-600">
-            The extension is unchanged. Sign-in, cloud storage, and sync are not connected yet; your
-            existing extension data has not been uploaded.
-          </p>
-          <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">
-            Next step: set up Supabase authentication and a protected database before adding account
-            or sync screens.
-          </p>
         </aside>
       </section>
 
-      <footer className="border-t border-slate-200 pt-5 text-sm text-slate-500">
-        Built with Next.js. Planning and architecture decisions live in the shared repository docs.
+      <section className="grid gap-4 border-t border-slate-200 py-10 sm:grid-cols-3" id="features">
+        {features.map(([title, description]) => (
+          <article className="py-2" key={title}>
+            <h2 className="font-semibold text-slate-900">{title}</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
+          </article>
+        ))}
+      </section>
+
+      <section
+        className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-6 sm:p-8"
+        id="setup"
+      >
+        <p className="eyebrow">Private by design</p>
+        <h2 className="mt-2 text-xl font-semibold text-slate-950">Your account is yours alone.</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-700">
+          The website uses Supabase authentication and row-level security. Extension data remains on
+          your device unless you explicitly opt into sync; that sync flow is a separate step and is
+          not active yet.
+        </p>
+        <p className="mt-4 text-xs leading-5 text-slate-600">
+          The app requires a configured Supabase project before account creation or cloud storage
+          works. Project setup is documented in <code>web/README.md</code>.
+        </p>
+      </section>
+
+      <footer className="mt-auto border-t border-slate-200 pt-6 text-xs text-slate-500">
+        Jarvis Web · Built alongside the Jarvis browser extension.
       </footer>
     </main>
   );
