@@ -3,6 +3,8 @@
 This is the single progress list for the Next.js website. Product-wide
 priorities and the sync roadmap remain in [`../PLANNER.md`](../PLANNER.md);
 architecture choices remain in [`../decisions/README.md`](../decisions/README.md).
+The website-extension sync implementation has its own feature breakdown in
+[`SYNC.md`](./SYNC.md).
 
 Status: **Done** = implemented and locally verified; **Needs setup** = code is
 ready but requires a user-owned Supabase project or external validation;
