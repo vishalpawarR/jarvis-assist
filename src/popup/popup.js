@@ -4,10 +4,12 @@ import { initializeNavigation } from "../features/navigation/index.js";
 import { initializePersonalDetails } from "../features/personal-details/index.js";
 import { initializeResume } from "../features/resume/popup.js";
 import { initializeSavedPages } from "../features/saved-pages/index.js";
+import { initializeSyncFeature } from "../features/sync/index.js";
 
 async function initializePopup() {
   try {
     initializeNavigation();
+    await initializeSyncFeature();
     const [tabs] = await Promise.all([
       chrome.tabs.query({ active: true, currentWindow: true }),
       initializePersonalDetails(),

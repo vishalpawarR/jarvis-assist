@@ -239,6 +239,24 @@ section {
   border-radius: 8px;
   font: inherit;
 }
+#sync-config-form,
+#sync-auth-form {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+}
+#sync-config-form input,
+#sync-auth-form input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid #dfe2ee;
+  border-radius: 8px;
+  font: inherit;
+}
+#sync-account-status {
+  margin-top: 14px;
+}
 .saved-item {
   padding: 10px 0;
   border-top: 1px solid #eceef5;

@@ -5,8 +5,8 @@
   "scripts": {
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check:syntax": "node --check src/background/service-worker.js && node --check src/content/floating-panel.js && node --check src/popup/popup.js && node --check src/features/job-sites/index.js && node --check src/features/personal-details/index.js && node --check src/features/personal-details/custom-fields.js && node --check src/features/saved-pages/index.js && node --check src/features/resume/popup.js && node --check src/features/resume/viewer.js && node --check src/features/data-export/index.js && node --check src/features/navigation/index.js && node --check src/shared/sync-tombstones.js",
-    "test:sync": "node --test tests/sync-tombstones.test.js"
+    "check:syntax": "node --check src/background/service-worker.js && node --check src/content/floating-panel.js && node --check src/popup/popup.js && node --check src/features/job-sites/index.js && node --check src/features/personal-details/index.js && node --check src/features/personal-details/custom-fields.js && node --check src/features/saved-pages/index.js && node --check src/features/resume/popup.js && node --check src/features/resume/viewer.js && node --check src/features/data-export/index.js && node --check src/features/navigation/index.js && node --check src/shared/sync-tombstones.js && node --check src/features/sync/client.js && node --check src/features/sync/index.js",
+    "test:sync": "node --test tests/sync-tombstones.test.js tests/sync-client.test.js"
   },
   "devDependencies": {
     "prettier": "^3.6.2"

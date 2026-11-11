@@ -1,8 +1,8 @@
 # Supabase setup for Jarvis
 
 Supabase provides authentication and PostgreSQL for the website. The extension
-continues to store data locally; creating an account does **not** upload or
-synchronize extension data.
+continues to store data locally until you explicitly opt in to sync. Extension
+account connection is available, but data transfer is not enabled yet.
 
 ## Create and configure a project
 
@@ -74,3 +74,7 @@ require your Supabase project; lint, type checks, and production builds do not.
 - The publishable key is intended for app configuration; RLS is the data access
   boundary. It is not a substitute for user-scoped policies.
 - Never add a service-role key to client-side code or `NEXT_PUBLIC_*` variables.
+- The extension uses the same project URL and publishable key as the website.
+  Its password is used only for the sign-in request; the extension stores a
+  refresh token in this browser profile until you sign out. Avoid shared
+  browser profiles for personal sync accounts.

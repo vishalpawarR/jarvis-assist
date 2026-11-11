@@ -64,6 +64,10 @@ its scripts and the current integration status.
 After changing extension files, reload Jarvis from the browser's extensions
 page and refresh the website tab.
 
+The extension's **Sync** tab can connect to the same Supabase project as the
+website. Connecting only signs in; data transfer is separate and is not
+enabled until sync consent and merge controls are implemented.
+
 ## Formatting and checks
 
 Run `npm install` once, then install the **Prettier - Code formatter**

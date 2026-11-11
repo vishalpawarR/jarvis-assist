@@ -71,6 +71,17 @@
         >
           Resume
         </button>
+        <button
+          class="tab"
+          id="sync-tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="sync-panel"
+          data-tab="sync"
+          tabindex="-1"
+        >
+          Sync
+        </button>
       </nav>
 
       <section class="tab-panel" id="sites-panel" role="tabpanel" aria-labelledby="sites-tab">
@@ -178,6 +189,55 @@
           <button id="export-data" class="button">Export my data</button>
           <p id="export-message" class="message" role="status"></p>
         </div>
+      </section>
+
+      <section class="tab-panel" id="sync-panel" role="tabpanel" aria-labelledby="sync-tab" hidden>
+        <h2>Connect to your Supabase account</h2>
+        <p class="hint">
+          Use the same account as the Jarvis website. Connecting does not upload data. Choose
+          categories and review a preview before enabling sync.
+        </p>
+        <form id="sync-config-form">
+          <label for="sync-project-url">Supabase project URL</label>
+          <input
+            id="sync-project-url"
+            name="projectUrl"
+            type="url"
+            placeholder="https://your-project.supabase.co"
+            autocomplete="url"
+            required
+          />
+          <label for="sync-publishable-key">Supabase publishable key</label>
+          <input
+            id="sync-publishable-key"
+            name="publishableKey"
+            type="password"
+            autocomplete="off"
+            required
+          />
+          <button type="submit" class="button">Save project settings</button>
+        </form>
+        <form id="sync-auth-form">
+          <label for="sync-email">Account email</label>
+          <input id="sync-email" name="email" type="email" autocomplete="username" required />
+          <label for="sync-password">Password</label>
+          <input
+            id="sync-password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+          />
+          <button type="submit" class="button button-primary">Sign in to Jarvis</button>
+        </form>
+        <p id="sync-account-status" class="hint" role="status">Not connected</p>
+        <p id="sync-account-email" class="hint"></p>
+        <button id="sync-sign-out" class="button" type="button" hidden>Sign out</button>
+        <p id="sync-message" class="message" role="status"></p>
+        <p class="hint">
+          The extension stores its refresh token in this browser profile so it can keep you signed
+          in. Sign out to remove it. Never enter a Supabase secret or service-role key here.
+        </p>
       </section>
     </main>
     <script type="module" src="popup.js"></script>
