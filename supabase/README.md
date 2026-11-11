@@ -48,8 +48,9 @@ initial migration. The sync foundation adds follow-up migrations:
    [`migrations/202611110003_clear_recreated_tombstones.sql`](./migrations/202611110003_clear_recreated_tombstones.sql).
 5. Apply
    [`migrations/202611110004_push_subscriptions.sql`](./migrations/202611110004_push_subscriptions.sql)
-   before enabling daily push notifications. The push feature and required
-   VAPID configuration are documented below.
+   and then
+   [`migrations/202611110005_push_delivery_claims.sql`](./migrations/202611110005_push_delivery_claims.sql)
+   before enabling daily push notifications.
 
 This migration creates a read-only, per-user `sync_tombstones` table. A
 database trigger records only the owner ID, record type, record ID, and
@@ -93,3 +94,106 @@ require your Supabase project; lint, type checks, and production builds do not.
   Its password is used only for the sign-in request; the extension stores a
   refresh token in this browser profile until you sign out. Avoid shared
   browser profiles for personal sync accounts.
+
+## Enable daily push notifications
+
+The dashboard asks permission only after a signed-in user selects **Enable
+daily check-in**. Each browser device stores its own subscription, timezone,
+and reminder time. Apply migrations 004 and 005 before enabling this feature.
+
+1. Generate a VAPID key pair from the repository root:
+
+   ```powershell
+   npx --yes web-push generate-vapid-keys --json
+   ```
+
+   Keep the private key secret. Set the public key as
+   `NEXT_PUBLIC_VAPID_PUBLIC_KEY` in `web/.env.local` and in the web deployment
+   environment. Never use a `NEXT_PUBLIC_` prefix for the private key.
+
+2. Generate a separate cron secret in PowerShell:
+
+   ```powershell
+   $bytes = New-Object byte[] 32
+   $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+   $rng.GetBytes($bytes)
+   $rng.Dispose()
+   $pushCronSecret = [Convert]::ToBase64String($bytes)
+   $pushCronSecret
+   ```
+
+3. Create a secrets file outside the repository with these values, then deploy
+   them and the Edge Function from the repository root:
+
+   ```text
+   VAPID_PUBLIC_KEY=<generated public key>
+   VAPID_PRIVATE_KEY=<generated private key>
+   VAPID_SUBJECT=mailto:<your contact email>
+   PUSH_CRON_SECRET=<generated cron secret>
+   ```
+
+   ```powershell
+   supabase link --project-ref <your-project-ref>
+   supabase secrets set --env-file <path-outside-repository>\jarvis-push-secrets.env
+   supabase functions deploy deliver-daily-checkins
+   ```
+
+   The function uses Supabase's injected `SUPABASE_URL` and
+   `SUPABASE_SERVICE_ROLE_KEY`. Its JWT check is disabled because the database
+   scheduler calls it server-to-server; the function independently requires
+   the high-entropy `x-cron-secret` header. Keep both the secrets file and cron
+   secret private.
+
+4. In Supabase **Database → Extensions**, enable `pg_cron`, `pg_net`, and
+   `supabase_vault` if they are not already enabled. In **SQL Editor**, store
+   the project URL and the exact same cron secret in Vault:
+
+   ```sql
+   select vault.create_secret(
+     'https://<your-project-ref>.supabase.co',
+     'jarvis_push_project_url'
+   );
+   select vault.create_secret(
+     '<the same generated cron secret>',
+     'jarvis_push_cron_secret'
+   );
+   ```
+
+5. Schedule the sender once per minute in the SQL Editor. It checks each
+   opted-in device's local time and sends at most one check-in per local date:
+
+   ```sql
+   select cron.schedule(
+     'jarvis-daily-push-delivery',
+     '* * * * *',
+     $$
+     select net.http_post(
+       url := (
+         select decrypted_secret
+         from vault.decrypted_secrets
+         where name = 'jarvis_push_project_url'
+       ) || '/functions/v1/deliver-daily-checkins',
+       headers := jsonb_build_object(
+         'content-type', 'application/json',
+         'x-cron-secret', (
+           select decrypted_secret
+           from vault.decrypted_secrets
+           where name = 'jarvis_push_cron_secret'
+         )
+       ),
+       body := '{}'::jsonb
+     );
+     $$
+   );
+   ```
+
+6. Sign in to the deployed HTTPS app, enable check-ins on a device, and choose
+   a time a few minutes ahead to test. The browser or installed PWA must allow
+   notifications; iOS/iPadOS requires opening the installed home-screen app.
+   Check Edge Function logs and `cron.job_run_details` if a test does not
+   arrive. Delete test schedules with `cron.unschedule(<jobid>)` when needed.
+
+The notification contains only a generic check-in and a link to the dashboard;
+it never includes personal details, saved page text, or resume data. The cron
+secret is sent through `pg_net`; restrict database access because pending HTTP
+request headers may be visible to privileged database roles.

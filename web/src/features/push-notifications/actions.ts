@@ -24,12 +24,28 @@ function isValidTimeZone(timezone: string) {
   }
 }
 
+function isSupportedPushEndpoint(endpoint: URL) {
+  const hostname = endpoint.hostname.toLowerCase();
+  return (
+    hostname === "fcm.googleapis.com" ||
+    hostname === "web.push.apple.com" ||
+    hostname === "push.services.mozilla.com" ||
+    hostname.endsWith(".push.services.mozilla.com") ||
+    hostname === "notify.windows.com" ||
+    hostname.endsWith(".notify.windows.com")
+  );
+}
+
 export async function savePushSubscription(input: unknown) {
   const parsed = subscriptionSchema.safeParse(input);
   if (!parsed.success) return { error: "The notification settings are invalid." };
 
   const endpoint = new URL(parsed.data.endpoint);
-  if (endpoint.protocol !== "https:" || !isValidTimeZone(parsed.data.timezone)) {
+  if (
+    endpoint.protocol !== "https:" ||
+    !isSupportedPushEndpoint(endpoint) ||
+    !isValidTimeZone(parsed.data.timezone)
+  ) {
     return { error: "The push endpoint or time zone is invalid." };
   }
 

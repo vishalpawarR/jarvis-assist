@@ -16,6 +16,29 @@ function needsInstalledAppleApp() {
   return isAppleMobile && !window.matchMedia("(display-mode: standalone)").matches;
 }
 
+function waitForActiveWorker(registration: ServiceWorkerRegistration) {
+  if (registration.active) return Promise.resolve(registration.active);
+
+  const worker = registration.installing ?? registration.waiting;
+  if (!worker) return Promise.reject(new Error("The push service worker did not start."));
+  const activeWorker: ServiceWorker = worker;
+
+  return new Promise<ServiceWorker>((resolve, reject) => {
+    function onStateChange() {
+      if (activeWorker.state === "activated") {
+        activeWorker.removeEventListener("statechange", onStateChange);
+        resolve(activeWorker);
+      } else if (activeWorker.state === "redundant") {
+        activeWorker.removeEventListener("statechange", onStateChange);
+        reject(new Error("The push service worker could not activate."));
+      }
+    }
+
+    activeWorker.addEventListener("statechange", onStateChange);
+    onStateChange();
+  });
+}
+
 export function PushSettings({ publicKey }: { publicKey: string | null }) {
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
   const [subscription, setSubscription] = useState<PushSubscription | null>(null);
@@ -46,6 +69,8 @@ export function PushSettings({ publicKey }: { publicKey: string | null }) {
       })
       .then(async (serviceWorker) => {
         if (!active || !serviceWorker) return;
+        await waitForActiveWorker(serviceWorker);
+        if (!active) return;
         setRegistration(serviceWorker);
         const existingSubscription = await serviceWorker.pushManager.getSubscription();
         if (!active) return;
@@ -101,7 +126,9 @@ export function PushSettings({ publicKey }: { publicKey: string | null }) {
         timezone,
       });
       if (resultFromServer.error) {
-        if (!subscription) await currentSubscription.unsubscribe();
+        if (!subscription && !(await currentSubscription.unsubscribe())) {
+          console.error("Jarvis could not cancel the unpersisted push subscription.");
+        }
         setError(resultFromServer.error);
         return;
       }

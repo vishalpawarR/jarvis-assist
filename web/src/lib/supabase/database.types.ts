@@ -148,7 +148,26 @@ export type Database = {
       >;
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      claim_due_push_subscriptions: {
+        Args: { p_limit?: number };
+        Returns: {
+          id: string;
+          endpoint: string;
+          p256dh: string;
+          auth: string;
+          send_for_date: string;
+        }[];
+      };
+      complete_push_delivery: {
+        Args: { p_subscription_id: string; p_send_for_date: string };
+        Returns: boolean;
+      };
+      defer_push_delivery_claim: {
+        Args: { p_subscription_id: string };
+        Returns: boolean;
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };

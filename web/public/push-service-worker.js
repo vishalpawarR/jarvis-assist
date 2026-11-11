@@ -8,14 +8,20 @@ self.addEventListener("push", (event) => {
     }
   }
 
-  const title = typeof payload.title === "string" ? payload.title : "Jarvis job-search check-in";
+  const notificationData = typeof payload === "object" && payload !== null ? payload : {};
+  const title =
+    typeof notificationData.title === "string"
+      ? notificationData.title
+      : "Jarvis job-search check-in";
   const body =
-    typeof payload.body === "string"
-      ? payload.body
+    typeof notificationData.body === "string"
+      ? notificationData.body
       : "Take a moment to review your job-search progress.";
   const path =
-    typeof payload.url === "string" && payload.url.startsWith("/") && !payload.url.startsWith("//")
-      ? payload.url
+    typeof notificationData.url === "string" &&
+    notificationData.url.startsWith("/") &&
+    !notificationData.url.startsWith("//")
+      ? notificationData.url
       : "/dashboard";
 
   event.waitUntil(

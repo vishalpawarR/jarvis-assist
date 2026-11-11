@@ -44,9 +44,11 @@ payloads should avoid personal details and resume contents.
       device, at the user's local time.
 - [x] Add authenticated subscription storage with ownership/RLS and per-device
       unsubscribe.
-- [ ] Add a server-side sender and VAPID secret configuration; never send
-      arbitrary notifications from an unauthenticated client.
-- [ ] Test permission denial, subscription renewal, unsubscribe, delivery
+- [x] Add a scheduled Supabase Edge Function sender and VAPID secret
+      configuration; never send arbitrary notifications from an unauthenticated
+      client.
+- [ ] Configure the user's Supabase project and verify permission denial,
+      subscription renewal, unsubscribe, delivery
       failures, and target browser/OS support.
 
 ### 4. Mobile widgets decision
@@ -70,6 +72,9 @@ payloads should avoid personal details and resume contents.
   to be verified.
 - Push preference UI now requests permission only from the user's button click,
   stores one device subscription per authenticated user, and supports a daily
-  local-time schedule. Delivery is not active until the server-side scheduler
-  and VAPID secrets are configured.
-- Current live push delivery and widget support: **not implemented**.
+  local-time schedule. The Edge Function checks due subscriptions once per
+  minute, sends a generic payload, removes expired endpoints, and throttles
+  failed retries. Delivery remains inactive until migrations, VAPID secrets,
+  Edge Function deployment, and the Supabase cron schedule are configured.
+- Live push delivery and target-device behavior remain unverified. Native
+  widget support is not implemented.
