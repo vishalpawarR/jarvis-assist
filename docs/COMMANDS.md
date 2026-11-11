@@ -5,22 +5,29 @@ for PowerShell, from the repository root unless stated otherwise.
 
 ## Commands used for the auth-aware logo fix and merge
 
-| Command                                      | What it does                                                                                                                                      |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `git status --short`                         | Shows changed and untracked files; check this before committing.                                                                                  |
-| `git branch --show-current`                  | Prints the current branch name.                                                                                                                   |
-| `git branch --list master`                   | Confirms the local `master` branch exists.                                                                                                        |
-| `git --no-pager log --oneline --decorate -5` | Shows the five latest commits without opening a pager.                                                                                            |
-| `git add <file...>`                          | Stages only the named files for a commit.                                                                                                         |
-| `git diff --cached --check`                  | Checks staged changes for whitespace errors.                                                                                                      |
-| `git diff --cached --stat`                   | Summarizes the staged change sizes by file.                                                                                                       |
-| `git commit -m "<subject>"`                  | Creates a commit using the staged changes.                                                                                                        |
-| `git switch master`                          | Changes the current working branch to `master`.                                                                                                   |
-| `git merge --ff-only <branch>`               | Moves the current branch forward only when a merge commit is unnecessary. It stops rather than creating a merge commit if branches have diverged. |
+| Command                                                                                                                                                                                                       | What it does                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `git status --short`                                                                                                                                                                                          | Shows changed and untracked files; check this before committing.                             |
+| `git branch --show-current`                                                                                                                                                                                   | Prints the current branch name.                                                              |
+| `git branch --list master`                                                                                                                                                                                    | Confirms the local `master` branch exists.                                                   |
+| `git --no-pager log --oneline --decorate -5`                                                                                                                                                                  | Shows the five latest commits without opening a pager.                                       |
+| `git switch -c fix/auth-aware-brand-navigation`                                                                                                                                                               | Creates and switches to a new feature branch from the current branch.                        |
+| `npx prettier --write web/src/app/page.tsx web/src/app/login/page.tsx web/src/app/signup/page.tsx web/src/features/auth/redirect-if-authenticated.ts`                                                         | Formats the changed web files from the repository root.                                      |
+| `Push-Location web; npm run lint; $result = $LASTEXITCODE; Pop-Location; exit $result`                                                                                                                        | Runs web lint from its package folder and returns the command's exit code.                   |
+| `Push-Location web; npm run typecheck; $result = $LASTEXITCODE; Pop-Location; exit $result`                                                                                                                   | Runs the TypeScript check from the web package and preserves its result.                     |
+| `Push-Location web; npm run build; $result = $LASTEXITCODE; Pop-Location; exit $result`                                                                                                                       | Builds the web app and preserves the build result.                                           |
+| `Push-Location web; npx prettier --check src/app/page.tsx src/app/login/page.tsx src/app/signup/page.tsx src/features/auth/redirect-if-authenticated.ts; $result = $LASTEXITCODE; Pop-Location; exit $result` | Checks formatting for the changed web files.                                                 |
+| `git diff --check`                                                                                                                                                                                            | Checks unstaged changes for whitespace errors.                                               |
+| `git add <file...>`                                                                                                                                                                                           | Stages only the named files for a commit.                                                    |
+| `git diff --cached --check`                                                                                                                                                                                   | Checks staged changes for whitespace errors.                                                 |
+| `git diff --cached --stat`                                                                                                                                                                                    | Summarizes the staged change sizes by file.                                                  |
+| `git commit -m "fix(web): make brand navigation auth-aware" -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"`                                                                        | Commits the code fix and adds the repository's required co-author trailer.                   |
+| `git commit -m "docs: add Windows command reference" -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"`                                                                               | Commits this command guide with the required trailer.                                        |
+| `git switch master`                                                                                                                                                                                           | Changes the current working branch to `master`.                                              |
+| `git merge --ff-only fix/auth-aware-brand-navigation`                                                                                                                                                         | Moves `master` forward only if no merge commit is needed. It stops if the branches diverged. |
 
-For the latest merge, the branch was `fix/auth-aware-brand-navigation`.
-The change was committed as `9dbc965`, then `master` was fast-forwarded to
-that commit.
+The logo fix is `9dbc965`; the command guide is `feb9773`. The feature branch
+was fast-forwarded to `master`.
 
 ## Everyday PowerShell commands
 
