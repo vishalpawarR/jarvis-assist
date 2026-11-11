@@ -39,6 +39,8 @@ status in [`docs/features/WEBSITE.md`](docs/features/WEBSITE.md). Follow
 [`supabase/README.md`](supabase/README.md) to configure a personal Supabase
 project; common Windows PowerShell, Git, and project commands are documented in
 [`docs/COMMANDS.md`](docs/COMMANDS.md).
+The PWA, notification, and mobile-widget plan is tracked in
+[`docs/features/PWA.md`](docs/features/PWA.md).
 
 ## Web app (Next.js)
 

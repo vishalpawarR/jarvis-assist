@@ -1,0 +1,62 @@
+# PWA, notifications, and mobile widgets
+
+This is the feature-by-feature planner for bringing Jarvis Web closer to a
+mobile app. Work in small commits; do not imply that a browser capability is
+available until it is implemented and tested on target devices.
+
+## Feasibility
+
+| Capability                                              | Feasibility                              | Notes                                                                                                                                                                                                                                  |
+| ------------------------------------------------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Install Jarvis Web as an app                            | **Possible**                             | Add a valid manifest, correctly sized icons, and serve the deployed site over HTTPS. Installation UI and browser requirements vary by platform.                                                                                        |
+| Basic offline experience                                | **Possible, limited**                    | Cache a public offline page and app icons only. Do not cache authenticated dashboard HTML, private records, or API responses in this initial version. Editing and syncing still require a network connection.                          |
+| Ask for notification permission                         | **Possible, user-initiated**             | The user must click a clear opt-in control. Do not request permission on page load or just because the app was installed.                                                                                                              |
+| Notify the user automatically when the app is installed | **Not reliably supported**               | Browsers do not provide a consistent install event or permission to send a notification on install. Show an optional welcome/onboarding prompt on a later visit instead.                                                               |
+| Browser-local notifications while the page is open      | **Possible, limited**                    | Can notify only while the app is active and permission is granted; not a dependable scheduled reminder.                                                                                                                                |
+| Remote Web Push while the app is closed                 | **Possible, with backend work**          | Requires a service worker, user consent, VAPID keys, secure subscription storage, an authenticated sender (for example a Supabase Edge Function), unsubscribe handling, and delivery/error monitoring. Browser and OS support differs. |
+| Native Android/iOS home-screen widgets                  | **Not supported by a website/PWA alone** | Widgets require a native app/OS extension. A responsive dashboard or home-screen shortcut is possible, but it is not a widget. A native wrapper/app would be a separate project.                                                       |
+
+Never put a VAPID private key or other server secret in browser code. Push
+payloads should avoid personal details and resume contents.
+
+## Feature sequence
+
+### 1. Installable PWA and safe offline fallback
+
+- [ ] Add app manifest, install icons, theme color, and mobile metadata.
+- [ ] Register a small service worker in production.
+- [ ] Cache only the static offline page and app icons; never cache private
+      pages or API responses.
+- [ ] Verify manifest/icons and offline navigation with a production build on
+      localhost and HTTPS deployment.
+
+### 2. Install guidance and permission onboarding
+
+- [ ] Explain browser-specific install steps when no install prompt is
+      available (notably iOS Safari).
+- [ ] Add an explicit notification opt-in control with permission state and a
+      way to turn it off.
+- [ ] Do not prompt automatically at install or on first page load.
+
+### 3. Reliable remote push notifications
+
+- [ ] Choose which user-visible events/reminders should send a push.
+- [ ] Add authenticated subscription storage, ownership/RLS, and unsubscribe.
+- [ ] Add a server-side sender and VAPID secret configuration; never send
+      arbitrary notifications from an unauthenticated client.
+- [ ] Test permission denial, subscription renewal, unsubscribe, delivery
+      failures, and target browser/OS support.
+
+### 4. Mobile widgets decision
+
+- [ ] Keep the responsive PWA dashboard as the web-only option.
+- [ ] If native widgets are still required, evaluate a separate native Android
+      and iOS app or wrapper; define data access and security before building.
+
+## Decisions and status
+
+- Start with Feature 1; keep authenticated data online-only and uncached.
+- Notification prompts are opt-in and user initiated, never coupled to app
+  installation.
+- Native widgets are outside the web-only scope.
+- Current live push delivery and widget support: **not implemented**.
