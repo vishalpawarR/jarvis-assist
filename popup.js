@@ -210,6 +210,22 @@ document.querySelectorAll(".tab").forEach((tab) => {
   });
 });
 
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName !== "local") return;
+  if (changes[TRACKED_SITES_KEY]) {
+    renderSites().catch((error) => {
+      console.error("Jarvis could not refresh tracked job sites.", error);
+      trackedSitesElement.textContent = "Could not load tracked sites.";
+    });
+  }
+  if (changes[SAVED_PAGES_KEY]) {
+    renderSavedPages(document.getElementById("saved-search").value).catch((error) => {
+      console.error("Jarvis could not refresh saved pages.", error);
+      savedPagesElement.textContent = "Could not load saved pages.";
+    });
+  }
+});
+
 document.getElementById("personal-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const info = Object.fromEntries(new FormData(event.currentTarget).entries());

@@ -9,8 +9,8 @@ activity and useful job-page details together.
 2. Turn on **Developer mode**.
 3. Choose **Load unpacked** and select this project folder.
 4. Open a regular website to see the floating **J** button. Pin the extension
-   and click its toolbar icon to open **My details**; use the other tabs to
-   manage tracked sites, saved pages, and your resume.
+   and click its toolbar icon to open **Job sites**; use the other tabs to
+   manage personal details, saved pages, and your resume.
 
 After changing extension files, reload Jarvis from the browser's extensions
 page and refresh the website tab.
