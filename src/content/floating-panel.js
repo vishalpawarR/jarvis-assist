@@ -211,6 +211,7 @@
           url: location.href,
           selection,
           savedAt: Date.now(),
+          updatedAt: new Date().toISOString(),
         });
         await chrome.storage.local.set({ [SAVED_PAGES_KEY]: pages });
       }
@@ -239,6 +240,7 @@
         lastTitle: document.title,
         createdAt: Date.now(),
         lastVisitedAt: Date.now(),
+        updatedAt: new Date().toISOString(),
       });
       await chrome.storage.local.set({ [TRACKED_SITES_KEY]: sites });
       showButtonResult(button, "Job site saved", "Save as job site");

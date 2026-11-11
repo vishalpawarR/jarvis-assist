@@ -146,6 +146,7 @@ async function addActiveSite(activeTab) {
     lastTitle: activeTab.title || "",
     createdAt: Date.now(),
     lastVisitedAt: Date.now(),
+    updatedAt: new Date().toISOString(),
   });
   await chrome.storage.local.set({ [TRACKED_SITES_KEY]: sites });
   siteMessage.textContent = "Website added. Jarvis will update its visit date when you open it.";

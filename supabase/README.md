@@ -1,8 +1,8 @@
 # Supabase setup for Jarvis
 
-Supabase provides authentication and PostgreSQL for the website. The extension
-continues to store data locally until you explicitly opt in to sync. Extension
-account connection is available, but data transfer is not enabled yet.
+Supabase provides authentication and PostgreSQL for the website and extension.
+The extension continues to store data locally until you explicitly select
+categories and opt in to sync.
 
 ## Create and configure a project
 
@@ -56,6 +56,13 @@ The extension queues local deletions as metadata-only entries. The third
 migration clears an old tombstone when its owner recreates the same record,
 so a prior deletion cannot permanently block restored personal details or
 tracked records.
+
+Apply all three migrations before enabling extension sync. The extension
+uploads/downloads only the categories you select after reviewing the preview.
+Once enabled, it syncs on startup, popup open, meaningful local edits, and a
+15-minute retry schedule. Website changes are saved directly to Supabase and
+are picked up by the extension on its next sync; the extension does not use a
+realtime subscription. Resume files are never uploaded.
 
 ## Run and verify locally
 

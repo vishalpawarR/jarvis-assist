@@ -233,6 +233,55 @@
         <p id="sync-account-status" class="hint" role="status">Not connected</p>
         <p id="sync-account-email" class="hint"></p>
         <button id="sync-sign-out" class="button" type="button" hidden>Sign out</button>
+        <div id="sync-category-controls" hidden>
+          <div class="manage-section">
+            <h2>Choose what to sync</h2>
+            <p class="hint">
+              Each category is optional. Your local records and existing cloud records will be
+              merged; deletion tombstones are applied first.
+            </p>
+            <label class="sync-category">
+              <input type="checkbox" data-sync-category value="personal_details" />
+              <span>
+                Personal details
+                <small id="sync-count-personal_details">Load preview for counts</small>
+              </span>
+            </label>
+            <label class="sync-category">
+              <input type="checkbox" data-sync-category value="tracked_sites" />
+              <span>
+                Tracked job sites
+                <small id="sync-count-tracked_sites">Load preview for counts</small>
+              </span>
+            </label>
+            <label class="sync-category">
+              <input type="checkbox" data-sync-category value="saved_pages" />
+              <span>
+                Saved pages
+                <small id="sync-count-saved_pages">Load preview for counts</small>
+              </span>
+            </label>
+            <button id="sync-preview" type="button" class="button">Refresh data preview</button>
+            <p id="sync-preview-message" class="message" role="status"></p>
+            <label class="sync-consent">
+              <input id="sync-confirm" type="checkbox" />
+              <span>
+                I reviewed the counts and consent to upload the selected local data to this account
+                and download its data to this device. This device may contain data previously synced
+                from another account.
+              </span>
+            </label>
+            <div class="button-row">
+              <button id="sync-enable" type="button" class="button button-primary">
+                Enable selected sync
+              </button>
+              <button id="sync-now" type="button" class="button" hidden>Sync now</button>
+              <button id="sync-pause" type="button" class="button" hidden>Pause sync</button>
+            </div>
+            <p id="sync-status" class="message" role="status">Not synced yet.</p>
+            <div id="sync-conflicts"></div>
+          </div>
+        </div>
         <p id="sync-message" class="message" role="status"></p>
         <p class="hint">
           The extension stores its refresh token in this browser profile so it can keep you signed

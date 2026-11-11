@@ -16,6 +16,7 @@ function getCustomFields(personalInfo) {
     if (
       !standardFieldKeys.has(key) &&
       key !== "customFields" &&
+      key !== "updatedAt" &&
       typeof value === "string" &&
       value.trim()
     ) {

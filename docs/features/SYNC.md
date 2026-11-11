@@ -29,8 +29,8 @@ website tracker as each feature is verified.
 - [x] Read the web-specific agent guidance, existing data model, migration,
       product plan, and decision log.
 - [x] Record baseline checks and known failures below.
-- [ ] Confirm extension sign-in callback support for Chrome and Edge before
-      selecting an authentication flow or adding browser permissions.
+- [x] Use email/password sign-in in the extension; this flow needs no OAuth
+      callback or additional browser permissions.
 
 ### Sync foundations
 
@@ -43,7 +43,7 @@ website tracker as each feature is verified.
       later save does not remain hidden by an earlier deletion.
 - [x] Preserve extension-local tracked-site, saved-page, and personal-detail
       deletes as metadata-only local outbox entries.
-- [ ] Define a shared record contract with stable IDs, timestamps, and conflict
+- [x] Define a shared record contract with stable IDs, timestamps, and conflict
       semantics without breaking existing local records.
 - [x] Add an extension-only Supabase Auth client without changing website
       authentication behavior.
@@ -52,34 +52,39 @@ website tracker as each feature is verified.
 
 ### Consent and first sync
 
-- [ ] Add separate, clear consent for personal details, tracked sites, and
+- [x] Add separate, clear consent for personal details, tracked sites, and
       saved pages; default each category to local-only.
-- [ ] Bind signed-out local changes and deletions only to the account the user
+- [x] Bind signed-out local changes and deletions only to the account the user
       explicitly approves; prevent cross-account replay on account switches.
-- [ ] Preview local and cloud record counts before the first merge.
-- [ ] Preserve legacy local records and assign/validate stable IDs without
+- [x] Preview local and cloud record counts before the first merge.
+- [x] Preserve legacy local records and assign/validate stable IDs without
       duplicating existing data.
-- [ ] Implement initial upload/download with per-user ownership and
+- [x] Implement initial upload/download with per-user ownership and
       idempotency.
 
 ### Incremental sync and recovery
 
-- [ ] Sync tracked-site creates and edits in both directions.
-- [ ] Sync saved-page creates and edits in both directions.
-- [ ] Sync personal-detail edits in both directions.
-- [ ] Queue offline mutations locally and retry safely after reconnect/restart.
-- [ ] Detect simultaneous edits and let the user resolve conflicts.
-- [ ] Show local-only, syncing, synced, and needs-attention states with retry,
-      pause, disconnect, export, and local-data clearing controls.
+- [x] Sync tracked-site creates and edits in both directions.
+- [x] Sync saved-page creates and edits in both directions.
+- [x] Sync personal-detail edits in both directions.
+- [x] Keep offline edits in local storage and retry on startup, popup open,
+      local edits, and a 15-minute alarm.
+- [x] Detect simultaneous edits and let the user resolve conflicts.
+- [x] Show local-only, syncing, synced, conflict, and needs-attention states
+      with manual retry, pause/resume, sign-out, and export.
+- [ ] Add an account-scoped control to clear synchronized local data.
+- [x] Refresh cloud data when the popup opens; the extension does not use a
+      realtime subscription.
 
 ### Verification
 
-- [ ] Test each feature's changed surface with targeted checks before commit.
+- [x] Test the transfer engine with mocked Supabase REST responses and run
+      targeted syntax, test, formatting, and whitespace checks.
 - [ ] Verify two accounts cannot read or modify each other's records.
-- [ ] Verify an offline edit survives restart/reconnect and is not duplicated
-      by retry.
+- [ ] Verify an offline edit survives a real browser restart/reconnect and is
+      not duplicated by retry.
 - [ ] Verify deletion reaches another client without restoring the record.
-- [ ] Verify signing out removes extension session credentials and leaves
+- [x] Verify signing out removes extension session credentials and leaves
       local data available unless the user chooses to clear it.
 
 ## Preflight checklist and recorded results
@@ -87,24 +92,25 @@ website tracker as each feature is verified.
 Record failures here instead of broadening a feature to fix unrelated baseline
 issues. Re-run the relevant checks after every implementation feature.
 
-| Precheck                                                                      | Result recorded on 2026-11-11                                                                             |
-| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Current branch is `feature/supabase-extension-sync`                           | Pass                                                                                                      |
-| Worktree clean before planning changes                                        | Pass                                                                                                      |
-| Repository and web-specific instructions read                                 | Pass                                                                                                      |
-| Local `web/.env.local` exists, is ignored, and is not tracked                 | Pass; its contents were not inspected                                                                     |
-| User confirmed the initial SQL migration succeeded                            | Pass; Supabase reported “Success. No rows returned”                                                       |
-| User confirmed local Site URL/callback URLs and Email provider are configured | Pass; verify email-confirmation behavior during account testing                                           |
-| User applied the sync tombstone migration and tested a website delete         | Pass; Supabase showed a recent `tracked_sites` tombstone                                                  |
-| Recreated-record tombstone migration (`202611110003`)                         | New; apply before exercising record recreation or sync                                                    |
-| Extension syntax check (`npm run check:syntax`)                               | Pass                                                                                                      |
-| Local tombstone tests (`npm run test:sync`)                                   | Pass; tracked sites, saved pages, personal details, idempotency, and invalid input covered                |
-| Extension auth tests (`npm run test:sync`)                                    | Pass; configuration validation, sign-in, refresh rotation/failure, password non-persistence, and sign-out |
-| Web lint (`cd web; npm run lint`)                                             | Pass                                                                                                      |
-| Web typecheck (`cd web; npm run typecheck`)                                   | Pass                                                                                                      |
-| Web production build (`cd web; npm run build`)                                | Pass                                                                                                      |
-| Repository formatting check (`npm run format:check`)                          | Existing baseline failure: Prettier reports 52 files; do not reformat unrelated files                     |
-| Two-account RLS isolation against the user's live project                     | Pending; required before sync rollout                                                                     |
+| Precheck                                                                      | Result recorded on 2026-11-11                                                                                  |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Current branch is `feature/supabase-extension-sync`                           | Pass                                                                                                           |
+| Worktree clean before planning changes                                        | Pass                                                                                                           |
+| Repository and web-specific instructions read                                 | Pass                                                                                                           |
+| Local `web/.env.local` exists, is ignored, and is not tracked                 | Pass; its contents were not inspected                                                                          |
+| User confirmed the initial SQL migration succeeded                            | Pass; Supabase reported “Success. No rows returned”                                                            |
+| User confirmed local Site URL/callback URLs and Email provider are configured | Pass; verify email-confirmation behavior during account testing                                                |
+| User applied the sync tombstone migration and tested a website delete         | Pass; Supabase showed a recent `tracked_sites` tombstone                                                       |
+| Recreated-record tombstone migration (`202611110003`)                         | Pending; apply before enabling sync                                                                            |
+| Extension syntax check (`npm run check:syntax`)                               | Pass                                                                                                           |
+| Sync, tombstone, and auth tests (`npm run test:sync`)                         | Pass; 23 tests including preview, consent, two-way merge, tombstones, conflict resolution, and account consent |
+| Targeted Prettier check for changed sync files                                | Pass after formatting                                                                                          |
+| `git diff --check`                                                            | Pass                                                                                                           |
+| Web lint (`cd web; npm run lint`)                                             | Pass                                                                                                           |
+| Web typecheck (`cd web; npm run typecheck`)                                   | Pass                                                                                                           |
+| Web production build (`cd web; npm run build`)                                | Pass                                                                                                           |
+| Repository formatting check (`npm run format:check`)                          | Existing baseline failure: Prettier reports 52 files; do not reformat unrelated files                          |
+| Two-account RLS isolation against the user's live project                     | Pending; required before sync rollout                                                                          |
 
 ### Required checks before each feature commit
 
@@ -145,3 +151,7 @@ requested.
 - 2026-11-11 — Added extension account connection with the website's Supabase
   project, password sign-in, token refresh, sign-out, and local session
   cleanup; selected data categories are not transferred yet.
+- 2026-11-11 — Added consent-gated preview, two-way merge, deletion handling,
+  conflict resolution, and extension refresh on local edits, popup open,
+  startup, and a 15-minute retry alarm. Mocked sync tests pass; live Supabase
+  verification remains pending.

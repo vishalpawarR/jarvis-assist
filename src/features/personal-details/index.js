@@ -68,6 +68,7 @@ export function initializePersonalDetails() {
       info[key] = value.trim();
     }
     info.customFields = collectCustomFields();
+    info.updatedAt = new Date().toISOString();
     try {
       await chrome.storage.local.set({ [PERSONAL_INFO_KEY]: info });
       personalMessage.textContent = "Personal details saved on this device.";

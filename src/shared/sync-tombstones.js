@@ -10,7 +10,7 @@ const STORAGE_KEY_BY_TYPE = {
   saved_pages: SAVED_PAGES_KEY,
   personal_details: PERSONAL_INFO_KEY,
 };
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_PATTERN = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 
 export async function recordLocalDeletion(recordType, recordId = null) {
   if (!Object.hasOwn(STORAGE_KEY_BY_TYPE, recordType)) {
