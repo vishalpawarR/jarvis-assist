@@ -1,5 +1,21 @@
 const TRACKED_SITES_KEY = "jarvisTrackedSites";
 
+chrome.commands.onCommand.addListener(async (command) => {
+  if (command !== "toggle-jarvis-panel") {
+    return;
+  }
+
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    if (tab?.id === undefined) {
+      return;
+    }
+    await chrome.tabs.sendMessage(tab.id, { type: "jarvis:toggle-panel" });
+  } catch (error) {
+    console.warn("Jarvis panel shortcut is unavailable on this browser page.", error);
+  }
+});
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === "jarvis:open-resume") {
     chrome.tabs.create({ url: chrome.runtime.getURL("resume.html") }).then(() => {

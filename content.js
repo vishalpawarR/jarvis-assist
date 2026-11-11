@@ -79,10 +79,6 @@
     return button;
   }
 
-  function daysSince(timestamp) {
-    return Math.max(0, Math.floor((Date.now() - timestamp) / 86_400_000));
-  }
-
   function addText(parent, tag, text, className) {
     const element = document.createElement(tag);
     element.textContent = text;
@@ -129,26 +125,13 @@
     controls.className = "row";
     controls.append(
       makeButton("Save this page", () => savePage(title, selection, notice), true),
-      makeButton("Track this site", () => trackCurrentSite(notice)),
+      makeButton("Save as job site", () => trackCurrentSite(notice)),
     );
     panel.append(controls);
     panel.append(makeButton("Open resume", () => openResume(notice)));
 
-    const result = await chrome.storage.local.get([TRACKED_SITES_KEY, SAVED_PAGES_KEY]);
-    const trackedSites = result[TRACKED_SITES_KEY] ?? [];
+    const result = await chrome.storage.local.get(SAVED_PAGES_KEY);
     const savedPages = result[SAVED_PAGES_KEY] ?? [];
-    addText(panel, "h3", `Tracked sites (${trackedSites.length})`);
-    if (!trackedSites.length) {
-      addText(panel, "p", "Track a job site to see when you last visited it.", "empty");
-    }
-    for (const site of trackedSites) {
-      const item = document.createElement("div");
-      item.className = "item";
-      addText(item, "strong", site.label || site.hostname);
-      addText(item, "div", `${site.hostname} · ${daysSince(site.lastVisitedAt)} days since last visit`, "muted");
-      panel.append(item);
-    }
-
     addText(panel, "h3", `Saved pages (${savedPages.length})`);
     if (!savedPages.length) {
       addText(panel, "p", "Saved pages stay on this device.", "empty");
@@ -224,5 +207,17 @@
 
   chrome.runtime.sendMessage({ type: "jarvis:site-visited" }).catch((error) => {
     console.error("Jarvis could not report this site visit.", error);
+  });
+
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message?.type !== "jarvis:toggle-panel") {
+      return false;
+    }
+    const isOpening = panel.classList.contains("hidden");
+    panel.classList.toggle("hidden", !isOpening);
+    if (isOpening) {
+      render();
+    }
+    return false;
   });
 })();

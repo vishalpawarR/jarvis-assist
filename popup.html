@@ -17,12 +17,12 @@
       </header>
 
       <nav class="tabs" role="tablist" aria-label="Jarvis sections">
-        <button class="tab active" id="sites-tab" role="tab" aria-selected="true" aria-controls="sites-panel" data-tab="sites">Job sites</button>
-        <button class="tab" id="personal-tab" role="tab" aria-selected="false" aria-controls="personal-panel" data-tab="personal">My details</button>
-        <button class="tab" id="saved-tab" role="tab" aria-selected="false" aria-controls="saved-panel" data-tab="saved">Saved & resume</button>
+        <button class="tab" id="sites-tab" role="tab" aria-selected="false" aria-controls="sites-panel" data-tab="sites" tabindex="-1">Job sites</button>
+        <button class="tab active" id="personal-tab" role="tab" aria-selected="true" aria-controls="personal-panel" data-tab="personal">My details</button>
+        <button class="tab" id="saved-tab" role="tab" aria-selected="false" aria-controls="saved-panel" data-tab="saved" tabindex="-1">Saved & resume</button>
       </nav>
 
-      <section class="tab-panel" id="sites-panel" role="tabpanel" aria-labelledby="sites-tab">
+      <section class="tab-panel hidden" id="sites-panel" role="tabpanel" aria-labelledby="sites-tab" hidden>
         <div class="section-heading">
           <h2>Tracked websites</h2>
           <button id="track-current" class="button button-primary">Track current site</button>
@@ -32,7 +32,7 @@
         <div id="tracked-sites"></div>
       </section>
 
-      <section class="tab-panel hidden" id="personal-panel" role="tabpanel" aria-labelledby="personal-tab" hidden>
+      <section class="tab-panel" id="personal-panel" role="tabpanel" aria-labelledby="personal-tab">
         <h2>Personal details</h2>
         <p class="hint">Saved only in this browser. Click a saved value to copy it.</p>
         <form id="personal-form">

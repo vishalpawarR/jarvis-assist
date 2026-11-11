@@ -12,6 +12,14 @@
     "default_title": "Open Jarvis",
     "default_popup": "popup.html"
   },
+  "commands": {
+    "toggle-jarvis-panel": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      },
+      "description": "Open or close the floating Jarvis panel"
+    }
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

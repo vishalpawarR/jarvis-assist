@@ -27,6 +27,11 @@ item's status as it is planned, built, and tested.
 - [x] **Resume folder shortcut** — Allow the user to save a resume copy under
   Downloads/Jarvis Resume and reveal that copy's folder. The original source
   folder cannot be revealed by a normal browser extension.
+- [x] **Separate floating panel from job-site list** — Keep tracked website
+  links in the extension popup; let the floating panel explicitly save the
+  current page as a job site or save it as a page/article.
+- [x] **Popup default and floating-panel shortcut** — Open the extension popup
+  on My details and provide a keyboard shortcut to toggle the floating panel.
 
 ## Suggested additions
 

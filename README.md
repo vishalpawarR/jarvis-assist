@@ -9,7 +9,8 @@ activity and useful job-page details together.
 2. Turn on **Developer mode**.
 3. Choose **Load unpacked** and select this project folder.
 4. Open a regular website to see the floating **J** button. Pin the extension
-   and click its toolbar icon to manage tracked sites and your resume.
+   and click its toolbar icon to open **My details**; use the other tabs to
+   manage tracked sites and your saved pages/resume.
 
 After changing extension files, reload Jarvis from the browser's extensions
 page and refresh the website tab.
@@ -17,8 +18,12 @@ page and refresh the website tab.
 ## Included in this first version
 
 - Floating Jarvis button on regular web pages.
+- **Ctrl+Shift+Y** opens or closes the floating panel; change the shortcut at
+  `chrome://extensions/shortcuts` or `edge://extensions/shortcuts`.
 - Copy page title or URL, and copy selected text when present.
-- Explicitly save the current page and selected text for later.
+- Explicitly save the current page (such as a blog/article) and selected text.
+- Save a page as a job site from the floating panel; the site list stays in the
+  extension popup's **Job sites** tab.
 - Search saved pages and reopen them from the extension menu.
 - Use top-level tabs for job sites, personal details, and saved pages/resume.
 - Track a website, see its favicon and last-visited age, and delete it.
