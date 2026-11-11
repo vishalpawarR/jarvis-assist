@@ -38,20 +38,24 @@ the verified server-side session.
 
 When a new feature adds a migration, run only the migrations you have not
 already applied, in filename order. For this existing project, do not rerun the
-initial migration. The sync foundation adds a second migration:
+initial migration. The sync foundation adds follow-up migrations:
 
 1. Open **SQL Editor** → **New query**.
 2. Paste the contents of
    [`migrations/202611110002_sync_tombstones.sql`](./migrations/202611110002_sync_tombstones.sql).
 3. Run it and check that Supabase reports success.
+4. Repeat with
+   [`migrations/202611110003_clear_recreated_tombstones.sql`](./migrations/202611110003_clear_recreated_tombstones.sql).
 
 This migration creates a read-only, per-user `sync_tombstones` table. A
 database trigger records only the owner ID, record type, record ID, and
 deletion time when an authenticated owner deletes a personal-details, tracked
 site, or saved-page row. The original row is still physically deleted, so its
 content is not retained for sync. Account deletion cascades to its tombstones.
-The extension now queues local deletions as metadata-only entries, but does
-not upload or consume server tombstones until its sync feature is implemented.
+The extension queues local deletions as metadata-only entries. The third
+migration clears an old tombstone when its owner recreates the same record,
+so a prior deletion cannot permanently block restored personal details or
+tracked records.
 
 ## Run and verify locally
 

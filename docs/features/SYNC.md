@@ -39,6 +39,8 @@ website tracker as each feature is verified.
 - [x] Record tombstones atomically when an authenticated owner deletes a
       server record; delete the original content and cascade tombstones with
       account deletion.
+- [x] Clear a matching tombstone on an authenticated record recreation so a
+      later save does not remain hidden by an earlier deletion.
 - [x] Preserve extension-local tracked-site, saved-page, and personal-detail
       deletes as metadata-only local outbox entries.
 - [ ] Define a shared record contract with stable IDs, timestamps, and conflict
@@ -94,6 +96,7 @@ issues. Re-run the relevant checks after every implementation feature.
 | User confirmed the initial SQL migration succeeded                            | Pass; Supabase reported “Success. No rows returned”                                                       |
 | User confirmed local Site URL/callback URLs and Email provider are configured | Pass; verify email-confirmation behavior during account testing                                           |
 | User applied the sync tombstone migration and tested a website delete         | Pass; Supabase showed a recent `tracked_sites` tombstone                                                  |
+| Recreated-record tombstone migration (`202611110003`)                         | New; apply before exercising record recreation or sync                                                    |
 | Extension syntax check (`npm run check:syntax`)                               | Pass                                                                                                      |
 | Local tombstone tests (`npm run test:sync`)                                   | Pass; tracked sites, saved pages, personal details, idempotency, and invalid input covered                |
 | Extension auth tests (`npm run test:sync`)                                    | Pass; configuration validation, sign-in, refresh rotation/failure, password non-persistence, and sign-out |
