@@ -1,0 +1,55 @@
+* { box-sizing: border-box; }
+body {
+  width: 360px;
+  margin: 0;
+  color: #20233a;
+  background: #fff;
+  font: 14px/1.45 system-ui, sans-serif;
+}
+main { padding: 18px; }
+header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.brand-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(145deg, #6d7cff, #4237c9);
+  font-size: 18px;
+  font-weight: 800;
+}
+h1, h2, p { margin: 0; }
+h1 { font-size: 19px; letter-spacing: -.03em; }
+h2 { font-size: 14px; }
+header p, .hint { color: #6a6e84; font-size: 12px; }
+section { padding: 15px 0; border-top: 1px solid #eceef5; }
+.section-heading, .button-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.button-row { justify-content: flex-start; margin-top: 9px; }
+.hint { margin-top: 6px; }
+.button {
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid #dfe2ee;
+  border-radius: 8px;
+  color: #323550;
+  background: #f7f8fc;
+  cursor: pointer;
+  font: 600 12px/1.3 system-ui, sans-serif;
+}
+.button:disabled { cursor: not-allowed; opacity: .5; }
+.button-primary { border-color: #5146d8; color: #fff; background: #5146d8; }
+.site-item { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 11px 0; border-top: 1px solid #eceef5; }
+.site-name { font-weight: 650; overflow-wrap: anywhere; }
+.site-meta { margin-top: 3px; color: #777b91; font-size: 11px; }
+.site-link { color: #3931a3; text-decoration: none; }
+.site-link:hover { text-decoration: underline; }
+.remove-site { border: 0; color: #656981; background: transparent; cursor: pointer; font: inherit; }
+#saved-search { width: 100%; margin-top: 9px; padding: 8px 10px; border: 1px solid #dfe2ee; border-radius: 8px; font: inherit; }
+.saved-item { padding: 10px 0; border-top: 1px solid #eceef5; }
+.saved-title { color: #3931a3; font-weight: 650; text-decoration: none; overflow-wrap: anywhere; }
+.saved-title:hover { text-decoration: underline; }
+.saved-snippet { margin-top: 3px; color: #777b91; font-size: 11px; overflow-wrap: anywhere; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.message { min-height: 16px; margin-top: 5px; color: #3931a3; font-size: 11px; }
+.footer-section { padding-bottom: 0; }

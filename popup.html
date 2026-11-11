@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jarvis Job Assistant</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="brand-mark" aria-hidden="true">J</div>
+        <div>
+          <h1>Jarvis</h1>
+          <p>Your private job-search assistant</p>
+        </div>
+      </header>
+
+      <section>
+        <div class="section-heading">
+          <h2>Job sites</h2>
+          <button id="track-current" class="button button-primary">Track current site</button>
+        </div>
+        <p id="active-site" class="hint">Checking the active tab…</p>
+        <p id="site-message" class="message" role="status"></p>
+        <div id="tracked-sites"></div>
+      </section>
+
+      <section>
+        <div class="section-heading">
+          <h2>Saved pages</h2>
+        </div>
+        <label class="sr-only" for="saved-search">Search saved pages</label>
+        <input id="saved-search" type="search" placeholder="Search saved pages">
+        <div id="saved-pages"></div>
+      </section>
+
+      <section>
+        <h2>Resume</h2>
+        <p class="hint">Choose a PDF once to keep a local copy for quick access.</p>
+        <div class="button-row">
+          <button id="choose-resume" class="button">Choose PDF</button>
+          <button id="open-resume" class="button" disabled>Open resume</button>
+        </div>
+        <input id="resume-file" type="file" accept="application/pdf,.pdf" hidden>
+        <p id="resume-message" class="message" role="status"></p>
+      </section>
+
+      <section class="footer-section">
+        <h2>Your data</h2>
+        <p class="hint">Tracked sites and saved pages remain in this browser.</p>
+        <button id="export-data" class="button">Export my data</button>
+        <p id="export-message" class="message" role="status"></p>
+      </section>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

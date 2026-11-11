@@ -5,20 +5,20 @@ item's status as it is planned, built, and tested.
 
 ## Core ideas
 
-- [ ] **Floating Jarvis button** — Show a Jarvis-branded icon that can be opened
+- [~] **Floating Jarvis button** — Show a Jarvis-branded icon that can be opened
   on supported websites without taking over the page.
-- [ ] **Quick-copy details** — Show the relevant text/details in a floating
+- [~] **Quick-copy details** — Show the relevant text/details in a floating
   panel and let the user copy an individual item with one click. Show clear
   confirmation when copying succeeds.
-- [ ] **Resume shortcut** — Provide a button to locate and open the user's
+- [~] **Resume shortcut** — Provide a button to locate and open the user's
   resume. Let the user choose the resume file or location; browsers generally
   do not allow a website to silently browse arbitrary folders.
-- [ ] **Job application tracker** — Keep a list of job-search/application
+- [~] **Job application tracker** — Keep a list of job-search/application
   websites and let the user record applications, companies, roles, dates, and
   current status.
-- [ ] **Last-visited information** — Show when each tracked website was last
+- [~] **Last-visited information** — Show when each tracked website was last
   opened and how many days ago. Let the user edit or remove tracked entries.
-- [ ] **Save and retrieve information** — Save useful details from a website
+- [~] **Save and retrieve information** — Save useful details from a website
   and find them later, with an explicit user action before saving.
 
 ## Suggested additions
@@ -27,7 +27,7 @@ item's status as it is planned, built, and tested.
   details, and an optional history of status changes for each application.
 - [ ] **Reminders** — Offer optional reminders for follow-ups or applications
   that have not been updated recently.
-- [ ] **Search, filters, and export** — Find saved jobs quickly, filter by
+- [~] **Search, filters, and export** — Find saved jobs quickly, filter by
   status/date, and export the user's data for backup or migration.
 - [ ] **Privacy controls** — Make it clear what is saved, provide edit/delete
   controls, and never save or sync page content without the user's action.
@@ -43,16 +43,20 @@ consent, secure authentication, and a way to delete synced data. The product
 should identify which information is captured from a page and ask before
 saving it.
 
-## Decisions to make before implementation
+## Product decisions for this prototype
 
-- [ ] Is Jarvis intended to be a browser extension, a web app, or both?
-- [ ] Which browsers should be supported first?
-- [ ] Should tracking happen automatically when a tracked site is visited, or
-  only after the user logs it?
-- [ ] Should the resume shortcut open a chosen file, or open its containing
-  folder where the browser/operating system permits it?
-- [ ] Is local-only storage sufficient for the first version, or is account
-  sync required?
+- [x] Is Jarvis intended to be a browser extension, a web app, or both? Start
+  with a Chrome/Edge Manifest V3 extension.
+- [x] Which browsers should be supported first? Chrome and Edge.
+- [x] Should tracking happen automatically when a tracked site is visited, or
+  only after the user logs it? Visits are updated automatically only for sites
+  the user explicitly adds to the tracker.
+- [x] Should the resume shortcut open a chosen file, or open its containing
+  folder where the browser/operating system permits it? Choose a PDF in a file
+  picker and open it in a Jarvis browser tab; native folder opening is not
+  available to a regular extension.
+- [x] Is local-only storage sufficient for the first version, or is account
+  sync required? Keep data local for the prototype.
 - [ ] Which application sites and which job details are most important for the
   first release?
 
