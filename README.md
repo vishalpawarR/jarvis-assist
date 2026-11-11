@@ -73,6 +73,7 @@ and Markdown on save.
 - `npm run format` formats the project.
 - `npm run format:check` checks formatting.
 - `npm run check:syntax` checks the JavaScript entry points and feature modules.
+- `npm run test:sync` tests the local metadata-only deletion queue.
 
 ## Included in this first version
 

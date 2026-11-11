@@ -1,8 +1,10 @@
 import { TRACKED_SITES_KEY } from "../../shared/storage.js";
+import { recordLocalDeletion } from "../../shared/sync-tombstones.js";
 
 const trackedSitesElement = document.getElementById("tracked-sites");
 const managedSitesElement = document.getElementById("managed-sites");
 const siteMessage = document.getElementById("site-message");
+const manageMessage = document.getElementById("manage-message");
 
 function getFaviconCandidates(site) {
   const candidates = [];
@@ -105,10 +107,14 @@ export async function renderManagedSites() {
     remove.textContent = "Delete";
     remove.addEventListener("click", async () => {
       if (!confirm(`Delete ${site.label || site.hostname} from tracked job sites?`)) return;
-      const current = await chrome.storage.local.get(TRACKED_SITES_KEY);
-      const updated = (current[TRACKED_SITES_KEY] ?? []).filter((entry) => entry.id !== site.id);
-      await chrome.storage.local.set({ [TRACKED_SITES_KEY]: updated });
-      await renderManagedSites();
+      try {
+        await recordLocalDeletion("tracked_sites", site.id);
+        manageMessage.textContent = "Tracked site deleted from this device.";
+        await renderManagedSites();
+      } catch (error) {
+        console.error("Jarvis could not delete the tracked site.", error);
+        manageMessage.textContent = "Could not delete the tracked site.";
+      }
     });
     item.append(details, remove);
     managedSitesElement.append(item);

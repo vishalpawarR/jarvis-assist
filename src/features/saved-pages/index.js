@@ -1,7 +1,9 @@
 import { SAVED_PAGES_KEY } from "../../shared/storage.js";
+import { recordLocalDeletion } from "../../shared/sync-tombstones.js";
 
 const savedPagesElement = document.getElementById("saved-pages");
 const managedPagesElement = document.getElementById("managed-pages");
+const manageMessage = document.getElementById("manage-message");
 
 export async function renderSavedPages(query = "") {
   const result = await chrome.storage.local.get(SAVED_PAGES_KEY);
@@ -69,10 +71,14 @@ export async function renderManagedPages() {
     remove.textContent = "Delete";
     remove.addEventListener("click", async () => {
       if (!confirm(`Delete “${page.title || page.url}” from saved pages?`)) return;
-      const current = await chrome.storage.local.get(SAVED_PAGES_KEY);
-      const updated = (current[SAVED_PAGES_KEY] ?? []).filter((entry) => entry.id !== page.id);
-      await chrome.storage.local.set({ [SAVED_PAGES_KEY]: updated });
-      await renderManagedPages();
+      try {
+        await recordLocalDeletion("saved_pages", page.id);
+        manageMessage.textContent = "Saved page deleted from this device.";
+        await renderManagedPages();
+      } catch (error) {
+        console.error("Jarvis could not delete the saved page.", error);
+        manageMessage.textContent = "Could not delete the saved page.";
+      }
     });
     item.append(details, remove);
     managedPagesElement.append(item);

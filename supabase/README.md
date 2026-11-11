@@ -50,8 +50,8 @@ database trigger records only the owner ID, record type, record ID, and
 deletion time when an authenticated owner deletes a personal-details, tracked
 site, or saved-page row. The original row is still physically deleted, so its
 content is not retained for sync. Account deletion cascades to its tombstones.
-The extension does not consume these tombstones until its sync feature is
-implemented.
+The extension now queues local deletions as metadata-only entries, but does
+not upload or consume server tombstones until its sync feature is implemented.
 
 ## Run and verify locally
 

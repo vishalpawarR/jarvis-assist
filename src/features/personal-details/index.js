@@ -1,4 +1,5 @@
 import { PERSONAL_INFO_KEY } from "../../shared/storage.js";
+import { recordLocalDeletion } from "../../shared/sync-tombstones.js";
 import {
   collectCustomFields,
   initializeCustomFields,
@@ -81,9 +82,9 @@ export function initializePersonalDetails() {
 
   document.getElementById("clear-personal").addEventListener("click", async () => {
     try {
-      await chrome.storage.local.remove(PERSONAL_INFO_KEY);
+      await recordLocalDeletion("personal_details");
       form.reset();
-      personalMessage.textContent = "Personal details cleared.";
+      personalMessage.textContent = "Personal details cleared from this device.";
       await renderPersonalInfo();
     } catch (error) {
       console.error("Jarvis could not clear personal details.", error);
