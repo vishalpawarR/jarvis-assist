@@ -39,11 +39,14 @@ Keep entries concise and link to the affected feature spec or implementation.
   database as their shared source of truth. The extension remains local-first
   and must not upload existing data until the user signs in and explicitly
   opts in. Initial sync scope is personal details, tracked sites, and saved
-  pages; the resume stays local.
+  pages; the resume stays local. On deletion, remove the record content
+  immediately and retain only its owner ID, type, record ID, and deletion time
+  as a minimal tombstone until account deletion.
 - Consequences: Both clients need user-scoped access, stable record identity,
   offline-safe synchronization, deletion propagation, and conflict handling.
   RLS must protect all synced records. Extension authentication and migration
   from local storage are tracked feature-by-feature in
   [`../features/SYNC.md`](../features/SYNC.md).
 - Revisit when: Users request cloud resume storage or test results show the
-  proposed sync scope or conflict flow needs to change.
+  proposed sync scope or conflict flow needs to change. The user selected
+  minimal tombstones on 2026-11-11.

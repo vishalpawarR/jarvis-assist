@@ -34,6 +34,25 @@ client roles receive only the permissions needed by the app. Row policies
 restrict access to `auth.uid()`. The website also derives the owner ID from
 the verified server-side session.
 
+### Apply later migrations
+
+When a new feature adds a migration, run only the migrations you have not
+already applied, in filename order. For this existing project, do not rerun the
+initial migration. The sync foundation adds a second migration:
+
+1. Open **SQL Editor** → **New query**.
+2. Paste the contents of
+   [`migrations/202611110002_sync_tombstones.sql`](./migrations/202611110002_sync_tombstones.sql).
+3. Run it and check that Supabase reports success.
+
+This migration creates a read-only, per-user `sync_tombstones` table. A
+database trigger records only the owner ID, record type, record ID, and
+deletion time when an authenticated owner deletes a personal-details, tracked
+site, or saved-page row. The original row is still physically deleted, so its
+content is not retained for sync. Account deletion cascades to its tombstones.
+The extension does not consume these tombstones until its sync feature is
+implemented.
+
 ## Run and verify locally
 
 ```powershell

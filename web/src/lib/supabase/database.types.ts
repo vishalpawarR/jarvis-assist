@@ -85,6 +85,26 @@ export type Database = {
           deleted_at?: string | null;
         }
       >;
+      sync_tombstones: Table<
+        {
+          user_id: string;
+          record_type: "personal_details" | "tracked_sites" | "saved_pages";
+          record_id: string;
+          deleted_at: string;
+        },
+        {
+          user_id: string;
+          record_type: "personal_details" | "tracked_sites" | "saved_pages";
+          record_id: string;
+          deleted_at?: string;
+        },
+        {
+          user_id?: string;
+          record_type?: "personal_details" | "tracked_sites" | "saved_pages";
+          record_id?: string;
+          deleted_at?: string;
+        }
+      >;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

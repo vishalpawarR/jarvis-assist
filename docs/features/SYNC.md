@@ -34,10 +34,14 @@ website tracker as each feature is verified.
 
 - [ ] Define shared record fields, timestamps, stable IDs, and deletion
       semantics without breaking existing local records.
-- [ ] Make deletes sync-safe while avoiding indefinite retention of deleted
-      personal information; document tombstone retention and cleanup.
-- [ ] Add any required forward-only Supabase migration, RLS policy, and
-      generated TypeScript database types.
+- [x] Add a forward-only migration for owner-scoped minimal tombstones; RLS
+      permits owners to read only their own tombstone metadata.
+- [x] Record tombstones atomically when an authenticated owner deletes a
+      server record; delete the original content and cascade tombstones with
+      account deletion.
+- [ ] Preserve extension-local deletes as minimal offline outbox entries.
+- [ ] Define shared record fields, timestamps, stable IDs, and conflict
+      semantics without breaking existing local records.
 - [ ] Add an extension-only Supabase client/auth module without changing
       website authentication behavior.
 - [ ] Add extension sign-in, session refresh, sign-out, and credential cleanup.
@@ -77,20 +81,20 @@ website tracker as each feature is verified.
 Record failures here instead of broadening a feature to fix unrelated baseline
 issues. Re-run the relevant checks after every implementation feature.
 
-| Precheck                                                                      | Result before sync implementation                                                     |
-| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| Current branch is `feature/supabase-extension-sync`                           | Pass                                                                                  |
-| Worktree clean before planning changes                                        | Pass                                                                                  |
-| Repository and web-specific instructions read                                 | Pass                                                                                  |
-| Local `web/.env.local` exists, is ignored, and is not tracked                 | Pass; its contents were not inspected                                                 |
-| User confirmed the initial SQL migration succeeded                            | Pass; Supabase reported “Success. No rows returned”                                   |
-| User confirmed local Site URL/callback URLs and Email provider are configured | Pass; verify email-confirmation behavior during account testing                       |
-| Extension syntax check (`npm run check:syntax`)                               | Pass                                                                                  |
-| Web lint (`cd web; npm run lint`)                                             | Pass                                                                                  |
-| Web typecheck (`cd web; npm run typecheck`)                                   | Pass                                                                                  |
-| Web production build (`cd web; npm run build`)                                | Pass                                                                                  |
-| Repository formatting check (`npm run format:check`)                          | Existing baseline failure: Prettier reports 52 files; do not reformat unrelated files |
-| Two-account RLS isolation against the user's live project                     | Pending; required before sync rollout                                                 |
+| Precheck                                                                      | Result before sync implementation                                                                                      |
+| ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Current branch is `feature/supabase-extension-sync`                           | Pass                                                                                                                   |
+| Worktree clean before planning changes                                        | Pass                                                                                                                   |
+| Repository and web-specific instructions read                                 | Pass                                                                                                                   |
+| Local `web/.env.local` exists, is ignored, and is not tracked                 | Pass; its contents were not inspected                                                                                  |
+| User confirmed the initial SQL migration succeeded                            | Pass; Supabase reported “Success. No rows returned”; apply the new sync migration separately before testing tombstones |
+| User confirmed local Site URL/callback URLs and Email provider are configured | Pass; verify email-confirmation behavior during account testing                                                        |
+| Extension syntax check (`npm run check:syntax`)                               | Pass                                                                                                                   |
+| Web lint (`cd web; npm run lint`)                                             | Pass                                                                                                                   |
+| Web typecheck (`cd web; npm run typecheck`)                                   | Pass                                                                                                                   |
+| Web production build (`cd web; npm run build`)                                | Pass                                                                                                                   |
+| Repository formatting check (`npm run format:check`)                          | Existing baseline failure: Prettier reports 52 files; do not reformat unrelated files                                  |
+| Two-account RLS isolation against the user's live project                     | Pending; required before sync rollout                                                                                  |
 
 ### Required checks before each feature commit
 
@@ -124,3 +128,5 @@ requested.
 
 - 2026-11-11 — Added sync feature breakdown, preflight results, and commit
   conventions on `feature/supabase-extension-sync`.
+- 2026-11-11 — Added the minimal, owner-scoped server tombstone contract;
+  extension-local deletion queuing remains a separate feature.
