@@ -302,7 +302,7 @@ and conflicting edits are not silently lost.
   browsers/devices.
 
 **Done when:** the website can be installed from supported browsers and the
-  user can tell when they are offline or their data is unsynced.
+user can tell when they are offline or their data is unsynced.
 
 ### Phase 5 — Optional resume sync and quality improvements
 

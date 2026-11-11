@@ -12,7 +12,8 @@ request.onsuccess = () => {
   };
   read.onsuccess = () => {
     if (!read.result) {
-      document.getElementById("message").textContent = "No resume is saved. Choose a PDF from the Jarvis extension menu.";
+      document.getElementById("message").textContent =
+        "No resume is saved. Choose a PDF from the Jarvis extension menu.";
       return;
     }
 
@@ -23,7 +24,8 @@ request.onsuccess = () => {
     viewer.title = "Saved resume PDF";
     viewer.src = url;
     document.getElementById("viewer").append(viewer);
-    document.getElementById("message").textContent = "The original file location is not available to the extension. You can save a copy into Downloads/Jarvis Resume and open that folder.";
+    document.getElementById("message").textContent =
+      "The original file location is not available to the extension. You can save a copy into Downloads/Jarvis Resume and open that folder.";
     document.getElementById("file-name").textContent = file.name;
 
     const showFolderButton = document.getElementById("save-show-folder");
@@ -43,9 +45,11 @@ request.onsuccess = () => {
           chrome.downloads.onChanged.removeListener(changed);
           if (delta.state.current === "complete") {
             chrome.downloads.show(downloadId);
-            document.getElementById("message").textContent = "Resume copy saved. Its folder has been opened.";
+            document.getElementById("message").textContent =
+              "Resume copy saved. Its folder has been opened.";
           } else {
-            document.getElementById("message").textContent = "The resume download did not complete.";
+            document.getElementById("message").textContent =
+              "The resume download did not complete.";
           }
           showFolderButton.disabled = false;
         };
@@ -54,7 +58,8 @@ request.onsuccess = () => {
         if (item?.state === "complete") {
           chrome.downloads.onChanged.removeListener(changed);
           chrome.downloads.show(downloadId);
-          document.getElementById("message").textContent = "Resume copy saved. Its folder has been opened.";
+          document.getElementById("message").textContent =
+            "Resume copy saved. Its folder has been opened.";
           showFolderButton.disabled = false;
         } else if (item?.state === "interrupted") {
           chrome.downloads.onChanged.removeListener(changed);
@@ -63,7 +68,8 @@ request.onsuccess = () => {
         }
       } catch (error) {
         console.error("Jarvis could not save or reveal the resume copy.", error);
-        document.getElementById("message").textContent = "Could not save or show the resume folder. Check the browser's download settings.";
+        document.getElementById("message").textContent =
+          "Could not save or show the resume folder. Check the browser's download settings.";
         showFolderButton.disabled = false;
       }
     });

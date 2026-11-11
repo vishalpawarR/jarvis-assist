@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jarvis Job Assistant</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="brand-mark" aria-hidden="true">J</div>
+        <div>
+          <h1>Jarvis</h1>
+          <p>Your private job-search assistant</p>
+        </div>
+      </header>
+
+      <nav class="tabs" role="tablist" aria-label="Jarvis sections">
+        <button
+          class="tab active"
+          id="sites-tab"
+          role="tab"
+          aria-selected="true"
+          aria-controls="sites-panel"
+          data-tab="sites"
+        >
+          Job sites
+        </button>
+        <button
+          class="tab"
+          id="personal-tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="personal-panel"
+          data-tab="personal"
+          tabindex="-1"
+        >
+          My details
+        </button>
+        <button
+          class="tab"
+          id="saved-tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="saved-panel"
+          data-tab="saved"
+          tabindex="-1"
+        >
+          Saved pages
+        </button>
+        <button
+          class="tab"
+          id="manage-tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="manage-panel"
+          data-tab="manage"
+          tabindex="-1"
+        >
+          Manage
+        </button>
+        <button
+          class="tab"
+          id="resume-tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="resume-panel"
+          data-tab="resume"
+          tabindex="-1"
+        >
+          Resume
+        </button>
+      </nav>
+
+      <section class="tab-panel" id="sites-panel" role="tabpanel" aria-labelledby="sites-tab">
+        <div class="section-heading">
+          <h2>Tracked websites</h2>
+          <button id="track-current" class="button button-primary">Track current site</button>
+        </div>
+        <p id="site-message" class="message" role="status"></p>
+        <div id="tracked-sites"></div>
+      </section>
+
+      <section
+        class="tab-panel hidden"
+        id="personal-panel"
+        role="tabpanel"
+        aria-labelledby="personal-tab"
+        hidden
+      >
+        <h2>Personal details</h2>
+        <p class="hint">Saved only in this browser. Click a saved value to copy it.</p>
+        <form id="personal-form">
+          <label for="full-name">Full name</label>
+          <input id="full-name" name="fullName" autocomplete="name" />
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" />
+          <label for="phone">Mobile number</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" />
+          <label for="location">Location</label>
+          <input id="location" name="location" autocomplete="address-level2" />
+          <label for="linkedin">LinkedIn URL</label>
+          <input
+            id="linkedin"
+            name="linkedin"
+            type="url"
+            autocomplete="url"
+            placeholder="https://linkedin.com/in/..."
+          />
+          <div class="button-row">
+            <button type="submit" class="button button-primary">Save details</button>
+            <button type="button" id="clear-personal" class="button">Clear</button>
+          </div>
+        </form>
+        <p id="personal-message" class="message" role="status"></p>
+        <div id="personal-values" aria-label="Saved details to copy"></div>
+      </section>
+
+      <section
+        class="tab-panel hidden"
+        id="saved-panel"
+        role="tabpanel"
+        aria-labelledby="saved-tab"
+        hidden
+      >
+        <h2>Saved pages</h2>
+        <label class="sr-only" for="saved-search">Search saved pages</label>
+        <input id="saved-search" type="search" placeholder="Search saved pages" />
+        <div id="saved-pages"></div>
+      </section>
+
+      <section
+        class="tab-panel hidden"
+        id="manage-panel"
+        role="tabpanel"
+        aria-labelledby="manage-tab"
+        hidden
+      >
+        <h2>Tracked job sites</h2>
+        <div id="managed-sites"></div>
+        <div class="manage-section">
+          <h2>Saved pages</h2>
+          <div id="managed-pages"></div>
+        </div>
+      </section>
+
+      <section
+        class="tab-panel hidden"
+        id="resume-panel"
+        role="tabpanel"
+        aria-labelledby="resume-tab"
+        hidden
+      >
+        <div class="resume-section">
+          <h2>Resume</h2>
+          <p class="hint">Choose a PDF to keep a private copy in this browser.</p>
+          <div class="button-row">
+            <button id="choose-resume" class="button">Choose PDF</button>
+            <button id="open-resume" class="button" disabled>Open resume</button>
+          </div>
+          <input id="resume-file" type="file" accept="application/pdf,.pdf" hidden />
+          <p id="resume-message" class="message" role="status"></p>
+          <p class="hint">
+            To open its folder, Jarvis can save a copy under Downloads/Jarvis Resume and show that
+            folder. Browser extensions cannot reveal the original file's folder.
+          </p>
+        </div>
+
+        <div class="export-section">
+          <h2>Your data</h2>
+          <p class="hint">
+            Tracked sites, saved pages, and personal details remain in this browser.
+          </p>
+          <button id="export-data" class="button">Export my data</button>
+          <p id="export-message" class="message" role="status"></p>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

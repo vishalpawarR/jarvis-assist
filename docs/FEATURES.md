@@ -19,41 +19,41 @@ item's status as it is planned, built, and tested.
 - [~] **Last-visited information** — Show when each tracked website was last
   opened and how many days ago. Let the user edit or remove tracked entries.
 - [x] **Site icons and deletion** — Show each tracked website's favicon
-  (with a letter fallback); manage deletions from a separate confirmed-delete
-  page rather than a small control on the icon grid.
+      (with a letter fallback); manage deletions from a separate confirmed-delete
+      page rather than a small control on the icon grid.
 - [x] **Inactive-site age and reminders** — Show days since each tracked site
-  was visited, outline icons in red after seven days, and send a generic
-  browser notification once per stale period.
+      was visited, outline icons in red after seven days, and send a generic
+      browser notification once per stale period.
 - [x] **Saved record management** — Add a separate extension tab for managing
-  tracked sites and saved pages, with explicit confirmed delete actions.
+      tracked sites and saved pages, with explicit confirmed delete actions.
 - [~] **Save and retrieve information** — Save useful details from a website
   and find them later, with an explicit user action before saving.
 - [x] **Personal details and quick copy** — Save contact fields locally and
-  copy an individual saved value, such as a mobile number, with one click.
+      copy an individual saved value, such as a mobile number, with one click.
 - [x] **Resume folder shortcut** — Allow the user to save a resume copy under
-  Downloads/Jarvis Resume and reveal that copy's folder. The original source
-  folder cannot be revealed by a normal browser extension.
+      Downloads/Jarvis Resume and reveal that copy's folder. The original source
+      folder cannot be revealed by a normal browser extension.
 - [x] **Separate floating panel from job-site list** — Keep tracked website
-  links in the extension popup; let the floating panel explicitly save the
-  current page as a job site or save it as a page/article.
+      links in the extension popup; let the floating panel explicitly save the
+      current page as a job site or save it as a page/article.
 - [x] **Popup default and floating-panel shortcut** — Open the extension popup
-  on My details and provide a keyboard shortcut to toggle the floating panel.
+      on My details and provide a keyboard shortcut to toggle the floating panel.
 - [x] **Compact floating panel and saved-pages tab** — Keep saved-page browsing
-  in its own extension tab, remove title/URL copy controls and status text from
-  the floating panel, and show clickable personal details there.
+      in its own extension tab, remove title/URL copy controls and status text from
+      the floating panel, and show clickable personal details there.
 
 ## Suggested additions
 
 - [ ] **Application notes and activity** — Add notes, follow-up dates, contact
-  details, and an optional history of status changes for each application.
+      details, and an optional history of status changes for each application.
 - [ ] **Reminders** — Offer optional reminders for follow-ups or applications
-  that have not been updated recently.
+      that have not been updated recently.
 - [~] **Search, filters, and export** — Find saved jobs quickly, filter by
   status/date, and export the user's data for backup or migration.
 - [ ] **Privacy controls** — Make it clear what is saved, provide edit/delete
-  controls, and never save or sync page content without the user's action.
+      controls, and never save or sync page content without the user's action.
 - [ ] **Accessible and unobtrusive panel** — Support keyboard navigation,
-  screen readers, resizing, and a way to hide or disable the floating button.
+      screen readers, resizing, and a way to hide or disable the floating button.
 
 ## Data storage direction
 
@@ -67,19 +67,19 @@ saving it.
 ## Product decisions for this prototype
 
 - [x] Is Jarvis intended to be a browser extension, a web app, or both? Start
-  with a Chrome/Edge Manifest V3 extension.
+      with a Chrome/Edge Manifest V3 extension.
 - [x] Which browsers should be supported first? Chrome and Edge.
 - [x] Should tracking happen automatically when a tracked site is visited, or
-  only after the user logs it? Visits are updated automatically only for sites
-  the user explicitly adds to the tracker.
+      only after the user logs it? Visits are updated automatically only for sites
+      the user explicitly adds to the tracker.
 - [x] Should the resume shortcut open a chosen file, or open its containing
-  folder where the browser/operating system permits it? Choose a PDF in a file
-  picker and open it in a Jarvis browser tab; native folder opening is not
-  available to a regular extension.
+      folder where the browser/operating system permits it? Choose a PDF in a file
+      picker and open it in a Jarvis browser tab; native folder opening is not
+      available to a regular extension.
 - [x] Is local-only storage sufficient for the first version, or is account
-  sync required? Keep data local for the prototype.
+      sync required? Keep data local for the prototype.
 - [ ] Which application sites and which job details are most important for the
-  first release?
+      first release?
 
 ## Status key
 

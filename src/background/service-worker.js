@@ -37,8 +37,10 @@ async function checkStaleSites() {
     const now = Date.now();
     const newlyStale = sites.filter((site) => {
       const lastVisitedAt = site.lastVisitedAt || site.createdAt || now;
-      return now - lastVisitedAt >= STALE_AFTER_MS &&
-        (!site.lastStaleNotificationAt || site.lastStaleNotificationAt < lastVisitedAt);
+      return (
+        now - lastVisitedAt >= STALE_AFTER_MS &&
+        (!site.lastStaleNotificationAt || site.lastStaleNotificationAt < lastVisitedAt)
+      );
     });
     if (!newlyStale.length) {
       return;
@@ -46,7 +48,7 @@ async function checkStaleSites() {
 
     await chrome.notifications.create(STALE_NOTIFICATION_ID, {
       type: "basic",
-      iconUrl: chrome.runtime.getURL("icon128.png"),
+      iconUrl: chrome.runtime.getURL("assets/jarvis-128.png"),
       title: "Jarvis job-site reminder",
       message: `${newlyStale.length} tracked job ${newlyStale.length === 1 ? "site has" : "sites have"} not been opened in 7 or more days.`,
       priority: 0,
@@ -99,9 +101,11 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 chrome.notifications.onClicked.addListener((notificationId) => {
   if (notificationId !== STALE_NOTIFICATION_ID) return;
   chrome.notifications.clear(notificationId);
-  chrome.tabs.create({ url: chrome.runtime.getURL("popup.html?tab=sites") }).catch((error) => {
-    console.error("Jarvis could not open the job-site list from the notification.", error);
-  });
+  chrome.tabs
+    .create({ url: chrome.runtime.getURL("src/popup/index.html?tab=sites") })
+    .catch((error) => {
+      console.error("Jarvis could not open the job-site list from the notification.", error);
+    });
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -111,12 +115,15 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 chrome.tabs.onActivated.addListener(({ tabId }) => {
-  chrome.tabs.get(tabId).then((tab) => {
-    if (tab.url) return recordSiteVisit(tab.url, tab.title);
-    return false;
-  }).catch((error) => {
-    console.error("Jarvis could not check the activated tab.", error);
-  });
+  chrome.tabs
+    .get(tabId)
+    .then((tab) => {
+      if (tab.url) return recordSiteVisit(tab.url, tab.title);
+      return false;
+    })
+    .catch((error) => {
+      console.error("Jarvis could not check the activated tab.", error);
+    });
 });
 
 chrome.commands.onCommand.addListener(async (command) => {
@@ -137,12 +144,15 @@ chrome.commands.onCommand.addListener(async (command) => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === "jarvis:open-resume") {
-    chrome.tabs.create({ url: chrome.runtime.getURL("resume.html") }).then(() => {
-      sendResponse({ ok: true });
-    }).catch((error) => {
-      console.error("Jarvis could not open the saved resume.", error);
-      sendResponse({ ok: false });
-    });
+    chrome.tabs
+      .create({ url: chrome.runtime.getURL("src/features/resume/viewer.html") })
+      .then(() => {
+        sendResponse({ ok: true });
+      })
+      .catch((error) => {
+        console.error("Jarvis could not open the saved resume.", error);
+        sendResponse({ ok: false });
+      });
     return true;
   }
 

@@ -3,17 +3,26 @@
   "name": "Jarvis Job Assistant",
   "version": "0.2.0",
   "description": "A private, local-first job search helper with a floating website panel.",
-  "permissions": ["storage", "activeTab", "tabs", "downloads", "clipboardWrite", "alarms", "notifications"],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "downloads",
+    "clipboardWrite",
+    "alarms",
+    "notifications"
+  ],
   "icons": {
-    "128": "icon128.png"
+    "128": "assets/jarvis-128.png"
   },
   "host_permissions": ["<all_urls>"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
   },
   "action": {
     "default_title": "Open Jarvis",
-    "default_popup": "popup.html"
+    "default_popup": "src/popup/index.html"
   },
   "commands": {
     "toggle-jarvis-panel": {
@@ -26,7 +35,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": ["src/content/floating-panel.js"],
       "run_at": "document_idle"
     }
   ]

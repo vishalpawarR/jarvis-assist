@@ -110,7 +110,11 @@
 
     const controls = document.createElement("div");
     controls.className = "row";
-    const savePageButton = makeButton("Save this page", () => savePage(title, selection, savePageButton), true);
+    const savePageButton = makeButton(
+      "Save this page",
+      () => savePage(title, selection, savePageButton),
+      true,
+    );
     const trackSiteButton = makeButton("Save as job site", () => trackCurrentSite(trackSiteButton));
     controls.append(savePageButton, trackSiteButton);
     panel.append(controls);
@@ -144,11 +148,15 @@
           try {
             await navigator.clipboard.writeText(personalInfo[key]);
             caption.textContent = "Copied";
-            setTimeout(() => { caption.textContent = label; }, 1200);
+            setTimeout(() => {
+              caption.textContent = label;
+            }, 1200);
           } catch (error) {
             console.error(`Jarvis could not copy ${label}.`, error);
             caption.textContent = "Copy failed";
-            setTimeout(() => { caption.textContent = label; }, 1600);
+            setTimeout(() => {
+              caption.textContent = label;
+            }, 1600);
           }
         });
         details.append(button);
@@ -159,7 +167,9 @@
 
   function showButtonResult(button, message, originalLabel) {
     button.textContent = message;
-    setTimeout(() => { button.textContent = originalLabel; }, 1400);
+    setTimeout(() => {
+      button.textContent = originalLabel;
+    }, 1400);
   }
 
   async function openResume(button) {
@@ -177,7 +187,13 @@
       const result = await chrome.storage.local.get(SAVED_PAGES_KEY);
       const pages = result[SAVED_PAGES_KEY] ?? [];
       if (!pages.some((page) => page.url === location.href)) {
-        pages.unshift({ id: crypto.randomUUID(), title, url: location.href, selection, savedAt: Date.now() });
+        pages.unshift({
+          id: crypto.randomUUID(),
+          title,
+          url: location.href,
+          selection,
+          savedAt: Date.now(),
+        });
         await chrome.storage.local.set({ [SAVED_PAGES_KEY]: pages });
       }
       showButtonResult(button, "Page saved", "Save this page");

@@ -3,6 +3,32 @@
 Jarvis is a local-first Chrome/Edge extension prototype for keeping job-search
 activity and useful job-page details together.
 
+## Project structure
+
+```text
+assets/                     Shared extension assets
+docs/
+  features/                 Feature-spec guidance
+  decisions/                Architecture and behavior decision log
+src/
+  background/               Manifest V3 service worker
+  content/                  Self-contained floating-panel content script
+  features/
+    data-export/
+    job-sites/
+    navigation/
+    personal-details/
+    resume/
+    saved-pages/
+  popup/                    Extension popup shell and styles
+  shared/                   Shared storage keys and small utilities
+```
+
+Each user-facing feature owns its popup behavior in `src/features/<feature>/`.
+The popup shell composes these modules. The service worker and injected content
+script remain separate browser entry points. Add a new feature folder, not a
+new `package.json`; the root package owns shared developer tooling.
+
 ## Install for development
 
 1. Open `chrome://extensions` in Chrome or `edge://extensions` in Edge.
@@ -14,6 +40,16 @@ activity and useful job-page details together.
 
 After changing extension files, reload Jarvis from the browser's extensions
 page and refresh the website tab.
+
+## Formatting and checks
+
+Run `npm install` once, then install the **Prettier - Code formatter**
+extension in VS Code. Workspace settings format JavaScript, CSS, HTML, JSON,
+and Markdown on save.
+
+- `npm run format` formats the project.
+- `npm run format:check` checks formatting.
+- `npm run check:syntax` checks the JavaScript entry points and feature modules.
 
 ## Included in this first version
 
@@ -39,6 +75,10 @@ page and refresh the website tab.
 - Save a resume copy under Downloads/Jarvis Resume and open that folder.
 - Export tracked-site, saved-page, and personal details as JSON.
 - Store extension data in local browser storage; there is no account or server.
+
+Feature priorities and progress are tracked in [docs/FEATURES.md](docs/FEATURES.md);
+the longer-term product plan is in [docs/PLANNER.md](docs/PLANNER.md). Record
+behavior and architecture choices in [docs/decisions/README.md](docs/decisions/README.md).
 
 ## Browser limitations and privacy
 
