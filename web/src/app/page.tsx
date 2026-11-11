@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirectIfAuthenticated } from "@/features/auth/redirect-if-authenticated";
 
 const features = [
   ["Personal details", "Keep reusable application information in one private profile."],
@@ -6,12 +7,15 @@ const features = [
   ["Saved pages", "Organize reading into a short-term queue or a keep-forever library."],
 ];
 
-export default function Home() {
+export default async function Home() {
+  await redirectIfAuthenticated();
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-5 py-7 sm:px-8">
       <header className="flex items-center gap-3">
-        <span className="brand-icon">J</span>
-        <span className="text-lg font-semibold tracking-tight text-slate-950">Jarvis</span>
+        <Link className="brand-link" href="/">
+          <span className="brand-icon">J</span> Jarvis
+        </Link>
         <nav className="ml-auto flex items-center gap-3">
           <Link className="button-secondary" href="/login">
             Sign in

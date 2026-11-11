@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { AuthForm } from "@/features/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { redirectIfAuthenticated } from "@/features/auth/redirect-if-authenticated";
 
 export default async function LoginPage({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
+  await redirectIfAuthenticated();
   const configured = isSupabaseConfigured();
   const { error } = await searchParams;
   return (

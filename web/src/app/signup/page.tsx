@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { AuthForm } from "@/features/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { redirectIfAuthenticated } from "@/features/auth/redirect-if-authenticated";
 
-export default function SignupPage() {
+export default async function SignupPage() {
+  await redirectIfAuthenticated();
   const configured = isSupabaseConfigured();
   return (
     <main className="auth-page">
