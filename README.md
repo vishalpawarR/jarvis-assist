@@ -28,6 +28,9 @@ page and refresh the website tab.
 - Search saved pages and reopen them from the extension menu.
 - Use top-level tabs for job sites, personal details, and saved pages/resume.
 - Track a website, see its favicon and last-visited age, and delete it.
+- See a day-count badge on each job-site icon; the icon gets a red outline
+  after seven days without a visit. Jarvis sends one generic browser reminder
+  when a site first becomes stale; visiting it starts a new reminder cycle.
 - Save contact details locally and click a saved value to copy it.
 - Pick a PDF resume and reopen it in an extension viewer.
 - Save a resume copy under Downloads/Jarvis Resume and open that folder.
@@ -50,3 +53,6 @@ stores, and some protected pages. Page details are only saved when you click
 The extension requests access to all regular websites to show the floating
 button and update visits for sites you explicitly track. Visit tracking stores
 the tracked site's most recent visit and page title in local browser storage.
+Jarvis requests browser notification and alarm permissions to provide
+once-per-stale-cycle reminders. Notification text includes only a count, not
+the tracked site names.

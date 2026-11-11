@@ -43,17 +43,19 @@ section { padding: 14px 0 0; }
 }
 .button:disabled { cursor: not-allowed; opacity: .5; }
 .button-primary { border-color: #5146d8; color: #fff; background: #5146d8; }
-.site-item { display: flex; align-items: center; gap: 9px; padding: 11px 0; border-top: 1px solid #eceef5; }
-.site-icon, .site-icon-fallback { flex: 0 0 24px; width: 24px; height: 24px; border-radius: 6px; }
-.site-icon { object-fit: contain; }
-.site-icon-fallback { display: grid; place-items: center; color: #5146d8; background: #eeedff; font-size: 11px; font-weight: 750; }
-.site-details { min-width: 0; flex: 1; }
-.site-name { font-weight: 650; overflow-wrap: anywhere; }
-.site-meta { margin-top: 3px; color: #777b91; font-size: 11px; }
-.site-link { color: #3931a3; text-decoration: none; }
-.site-link:hover { text-decoration: underline; }
-.remove-site { border: 0; color: #656981; background: transparent; cursor: pointer; font: inherit; }
-.remove-site:hover { color: #b42335; }
+.site-item { position: relative; flex: 0 0 42px; width: 42px; height: 42px; }
+#tracked-sites { display: flex; flex-wrap: wrap; gap: 12px; padding: 12px 2px 2px; }
+.site-link { position: relative; display: grid; width: 42px; height: 42px; place-items: center; overflow: visible; border: 1px solid #e1e4f0; border-radius: 50%; background: #f7f8fc; }
+.site-link:hover { box-shadow: 0 0 0 3px #5146d822; }
+.site-link.stale { border: 2px solid #d92d20; }
+.site-icon, .site-icon-fallback { width: 24px; height: 24px; border-radius: 50%; }
+.site-icon { object-fit: cover; }
+.site-icon-fallback { display: grid; place-items: center; color: #5146d8; background: #eeedff; font-size: 12px; font-weight: 750; }
+.site-age { position: absolute; right: -7px; bottom: -6px; display: grid; min-width: 18px; height: 18px; place-items: center; padding: 0 3px; border: 1px solid white; border-radius: 10px; color: #fff; background: #777b91; font: 700 9px/1 system-ui, sans-serif; }
+.site-age.stale { background: #d92d20; }
+.remove-site { position: absolute; top: -5px; right: -5px; display: grid; width: 17px; height: 17px; place-items: center; padding: 0; border: 1px solid white; border-radius: 50%; color: white; background: #777b91; cursor: pointer; font: 14px/1 system-ui, sans-serif; opacity: 0; }
+.site-item:hover .remove-site, .site-item:focus-within .remove-site { opacity: 1; }
+.remove-site:hover { background: #b42335; }
 #saved-search { width: 100%; margin-top: 9px; padding: 8px 10px; border: 1px solid #dfe2ee; border-radius: 8px; font: inherit; }
 .saved-item { padding: 10px 0; border-top: 1px solid #eceef5; }
 .saved-title { color: #3931a3; font-weight: 650; text-decoration: none; overflow-wrap: anywhere; }

@@ -10,10 +10,6 @@ const savedPagesElement = document.getElementById("saved-pages");
 const siteMessage = document.getElementById("site-message");
 const resumeMessage = document.getElementById("resume-message");
 
-function daysSince(timestamp) {
-  return Math.max(0, Math.floor((Date.now() - timestamp) / 86_400_000));
-}
-
 function openResumeDatabase() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(RESUME_DB_NAME, 1);
@@ -56,8 +52,19 @@ async function renderSites() {
   }
 
   for (const site of sites) {
+    const lastVisitedAt = site.lastVisitedAt || site.createdAt || Date.now();
+    const daysSince = Math.max(0, Math.floor((Date.now() - lastVisitedAt) / 86_400_000));
     const row = document.createElement("div");
     row.className = "site-item";
+    if (daysSince >= 7) row.classList.add("stale");
+    const link = document.createElement("a");
+    link.className = `site-link${daysSince >= 7 ? " stale" : ""}`;
+    link.href = site.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.title = `${site.label || site.hostname} · last opened ${daysSince} ${daysSince === 1 ? "day" : "days"} ago`;
+    link.setAttribute("aria-label", `Open ${site.label || site.hostname}; last opened ${daysSince} ${daysSince === 1 ? "day" : "days"} ago`);
+
     const icon = document.createElement("img");
     icon.className = "site-icon";
     icon.alt = "";
@@ -68,35 +75,26 @@ async function renderSites() {
       fallback.textContent = (site.hostname || "?").slice(0, 1).toUpperCase();
       icon.replaceWith(fallback);
     }, { once: true });
-
-    const details = document.createElement("div");
-    details.className = "site-details";
-    const name = document.createElement("div");
-    name.className = "site-name";
-    const link = document.createElement("a");
-    link.className = "site-link";
-    link.href = site.url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = site.label || site.hostname;
-    name.append(link);
-    const meta = document.createElement("div");
-    meta.className = "site-meta";
-    meta.textContent = `${site.hostname} · ${daysSince(site.lastVisitedAt)} days since last visit`;
-    details.append(name, meta);
+    link.append(icon);
+    const ageBadge = document.createElement("span");
+    ageBadge.className = `site-age${daysSince >= 7 ? " stale" : ""}`;
+    ageBadge.textContent = daysSince > 99 ? "99+" : String(daysSince);
+    ageBadge.setAttribute("aria-hidden", "true");
+    link.append(ageBadge);
 
     const remove = document.createElement("button");
     remove.type = "button";
     remove.className = "remove-site";
-    remove.textContent = "Delete";
+    remove.textContent = "×";
     remove.setAttribute("aria-label", `Delete ${site.hostname}`);
+    remove.title = `Delete ${site.hostname}`;
     remove.addEventListener("click", async () => {
       const current = await chrome.storage.local.get(TRACKED_SITES_KEY);
       const updated = (current[TRACKED_SITES_KEY] ?? []).filter((item) => item.id !== site.id);
       await chrome.storage.local.set({ [TRACKED_SITES_KEY]: updated });
       await renderSites();
     });
-    row.append(icon, details, remove);
+    row.append(link, remove);
     trackedSitesElement.append(row);
   }
 }
@@ -183,17 +181,20 @@ async function initialize() {
     getResume(),
   ]);
   activeTab = tabs[0];
-  const activeSite = document.getElementById("active-site");
   try {
     const url = new URL(activeTab?.url ?? "");
-    activeSite.textContent = `Current page: ${activeTab.title || url.hostname} (${url.hostname})`;
+    if (!["http:", "https:"].includes(url.protocol)) throw new Error("Unsupported page protocol");
   } catch {
-    activeSite.textContent = "This browser page cannot be added to the tracker.";
     document.getElementById("track-current").disabled = true;
+    siteMessage.textContent = "Open a regular website to track it.";
   }
   document.getElementById("open-resume").disabled = !resume;
   if (resume) resumeMessage.textContent = `Saved locally: ${resume.name}`;
   await Promise.all([renderSites(), renderSavedPages(), renderPersonalInfo()]);
+  const requestedTab = new URLSearchParams(location.search).get("tab");
+  if (requestedTab) {
+    document.querySelector(`.tab[data-tab="${CSS.escape(requestedTab)}"]`)?.click();
+  }
 }
 
 document.querySelectorAll(".tab").forEach((tab) => {

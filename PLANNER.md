@@ -67,7 +67,8 @@ and retried safely.
   (`in_office`/`not_in_office`/`unknown`), status source
   (`manual`/`schedule`/`location`), expiry time, `updated_at`.
 - `tracked_sites`: `id`, `user_id`, hostname, label, URL, last title,
-  last-visited time, `created_at`, `updated_at`, optional `deleted_at`.
+  last-visited time, last stale-notification time, `created_at`, `updated_at`,
+  optional `deleted_at`.
 - `saved_pages`: `id`, `user_id`, title, URL, selected text, `saved_at`,
   `updated_at`, optional `deleted_at`.
 - `sync_changes` (only if needed): user ID, record type/ID, operation,
@@ -333,6 +334,11 @@ refresh limitations and sign-out/cache-clearing behavior.
 - **Notifications can expose job-search activity:** Keep notification text
   generic by default, provide category/quiet-hour controls, and make office
   status temporary and user-controlled.
+- **Job-site inactivity reminders:** Show the elapsed days on each tracked
+  site's favicon, add a red outline at 7 days without a visit, and send one
+  generic browser notification when a site first becomes stale. Update the
+  displayed day count whenever the tracker opens. A later visit resets its
+  reminder cycle. Do not include site names in the OS notification.
 - **A website install is not a native widget:** Budget for native platform
   work if Android/iOS home-screen widgets are a confirmed requirement.
 
@@ -344,5 +350,6 @@ opt-in, and use Supabase PostgreSQL with RLS. Defer realtime, shared accounts,
 cloud resume storage, location-based office detection, and native phone widgets
 until the basic sync and schedule-based notifications have been tested and
 users ask for them. Start office-hours suppression with an editable schedule
-and manual office-status prompt; treat location as optional. Ship the PWA
-dashboard before investing in native widgets.
+and manual office-status prompt; treat location as optional. Include
+seven-day job-site inactivity indicators and low-noise browser reminders.
+Ship the PWA dashboard before investing in native widgets.

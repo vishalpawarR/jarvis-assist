@@ -3,7 +3,10 @@
   "name": "Jarvis Job Assistant",
   "version": "0.2.0",
   "description": "A private, local-first job search helper with a floating website panel.",
-  "permissions": ["storage", "activeTab", "tabs", "downloads", "clipboardWrite"],
+  "permissions": ["storage", "activeTab", "tabs", "downloads", "clipboardWrite", "alarms", "notifications"],
+  "icons": {
+    "128": "icon128.png"
+  },
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"

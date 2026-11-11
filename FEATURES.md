@@ -20,6 +20,9 @@ item's status as it is planned, built, and tested.
   opened and how many days ago. Let the user edit or remove tracked entries.
 - [x] **Site icons and deletion** — Show each tracked website's browser favicon
   (with a letter fallback) and let the user delete it from the tracker.
+- [x] **Inactive-site age and reminders** — Show days since each tracked site
+  was visited, outline icons in red after seven days, and send a generic
+  browser notification once per stale period.
 - [~] **Save and retrieve information** — Save useful details from a website
   and find them later, with an explicit user action before saving.
 - [x] **Personal details and quick copy** — Save contact fields locally and
