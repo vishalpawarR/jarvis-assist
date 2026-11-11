@@ -4,6 +4,7 @@ import { getPersonalDetails } from "@/features/personal-details/data";
 import { PersonalDetailsForm } from "@/features/personal-details/personal-details-form";
 import { getSavedPages } from "@/features/saved-pages/data";
 import { PageManager } from "@/features/saved-pages/page-manager";
+import { PushSettings } from "@/features/push-notifications/push-settings";
 import { getTrackedSites } from "@/features/tracked-sites/data";
 import { SiteManager } from "@/features/tracked-sites/site-manager";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -114,6 +115,9 @@ export default async function DashboardPage({ searchParams }: Props) {
           <a className="nav-link" href="#saved-pages">
             Saved pages
           </a>
+          <a className="nav-link" href="#notifications">
+            Notifications
+          </a>
           <form action={signOut}>
             <button className="button-secondary" type="submit">
               Sign out
@@ -154,6 +158,7 @@ export default async function DashboardPage({ searchParams }: Props) {
         </section>
         <SiteManager sites={sitesResult.data ?? []} />
         <PageManager pages={pagesResult.data ?? []} />
+        <PushSettings publicKey={process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? null} />
       </div>
       <footer className="py-8 text-center text-xs text-slate-500">
         Your account data is protected by Supabase Row Level Security. Resume files remain local.

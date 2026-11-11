@@ -46,6 +46,10 @@ initial migration. The sync foundation adds follow-up migrations:
 3. Run it and check that Supabase reports success.
 4. Repeat with
    [`migrations/202611110003_clear_recreated_tombstones.sql`](./migrations/202611110003_clear_recreated_tombstones.sql).
+5. Apply
+   [`migrations/202611110004_push_subscriptions.sql`](./migrations/202611110004_push_subscriptions.sql)
+   before enabling daily push notifications. The push feature and required
+   VAPID configuration are documented below.
 
 This migration creates a read-only, per-user `sync_tombstones` table. A
 database trigger records only the owner ID, record type, record ID, and

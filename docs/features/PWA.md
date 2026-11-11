@@ -34,14 +34,16 @@ payloads should avoid personal details and resume contents.
 
 - [ ] Explain browser-specific install steps when no install prompt is
       available (notably iOS Safari).
-- [ ] Add an explicit notification opt-in control with permission state and a
-      way to turn it off.
-- [ ] Do not prompt automatically at install or on first page load.
+- [x] Add an explicit opt-in control for daily job-search check-ins, with a
+      configurable local time and a way to turn notifications off per device.
+- [x] Ask for notification permission only after the user enables check-ins.
 
 ### 3. Reliable remote push notifications
 
-- [ ] Choose which user-visible events/reminders should send a push.
-- [ ] Add authenticated subscription storage, ownership/RLS, and unsubscribe.
+- [x] Choose the first trigger: one daily job-search check-in per opted-in
+      device, at the user's local time.
+- [x] Add authenticated subscription storage with ownership/RLS and per-device
+      unsubscribe.
 - [ ] Add a server-side sender and VAPID secret configuration; never send
       arbitrary notifications from an unauthenticated client.
 - [ ] Test permission denial, subscription renewal, unsubscribe, delivery
@@ -66,4 +68,8 @@ payloads should avoid personal details and resume contents.
   manifest and service worker load, and an offline dashboard navigation shows
   the offline page. Installation on deployed HTTPS and target devices remains
   to be verified.
+- Push preference UI now requests permission only from the user's button click,
+  stores one device subscription per authenticated user, and supports a daily
+  local-time schedule. Delivery is not active until the server-side scheduler
+  and VAPID secrets are configured.
 - Current live push delivery and widget support: **not implemented**.

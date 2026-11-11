@@ -105,6 +105,47 @@ export type Database = {
           deleted_at?: string;
         }
       >;
+      push_subscriptions: Table<
+        {
+          id: string;
+          user_id: string;
+          endpoint: string;
+          p256dh: string;
+          auth: string;
+          daily_checkins_enabled: boolean;
+          daily_checkin_time: string;
+          timezone: string;
+          last_sent_local_date: string | null;
+          claimed_until: string | null;
+          created_at: string;
+          updated_at: string;
+        },
+        {
+          id?: string;
+          user_id: string;
+          endpoint: string;
+          p256dh: string;
+          auth: string;
+          daily_checkins_enabled?: boolean;
+          daily_checkin_time?: string;
+          timezone?: string;
+          last_sent_local_date?: string | null;
+          claimed_until?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        },
+        {
+          endpoint?: string;
+          p256dh?: string;
+          auth?: string;
+          daily_checkins_enabled?: boolean;
+          daily_checkin_time?: string;
+          timezone?: string;
+          last_sent_local_date?: string | null;
+          claimed_until?: string | null;
+          updated_at?: string;
+        }
+      >;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
